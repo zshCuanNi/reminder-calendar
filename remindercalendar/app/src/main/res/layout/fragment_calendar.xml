@@ -7,16 +7,62 @@
     tools:context=".ui.calendar.CalendarFragment">
 
     <TextView
-        android:id="@+id/text_calendar"
+        android:id="@+id/text_month"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="20dp"
+        app:layout_constraintTop_toTopOf="parent"
+        android:fontFamily="sans-serif-condensed"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textSize="60dp" />
+
+    <TextView
+        android:id="@+id/text_year"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        app:layout_constraintLeft_toRightOf="@+id/text_month"
+        app:layout_constraintBaseline_toBaselineOf="@+id/text_month"
+        android:textSize="20dp" />
+
+
+    <com.haibin.calendarview.CalendarLayout
+        android:id="@+id/calendarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@+id/text_month"
+        app:default_status="shrink"
+        app:calendar_show_mode="only_month_view"
+        app:calendar_content_view_id="@+id/recyclerView">
+
+        <com.haibin.calendarview.CalendarView
+            android:id="@+id/calendarView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#fff"
+            app:calendar_height="50dp"
+            app:current_month_text_color="#333333"
+            app:current_month_lunar_text_color="#CFCFCF"
+            app:min_year="2004"
+            app:other_month_text_color="#e1e1e1"
+            app:scheme_text="假"
+            app:scheme_text_color="#333"
+            app:scheme_theme_color="#333"
+            app:selected_text_color="#fff"
+            app:selected_theme_color="#333"
+            app:week_start_with="mon"
+            app:week_background="#fff"
+            app:month_view_show_mode="mode_only_current"
+            app:week_text_color="#111"
+            />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#d4d4d4" />
+    </com.haibin.calendarview.CalendarLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

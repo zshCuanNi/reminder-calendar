@@ -7,12 +7,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.reminder_calendar.R;
+import com.haibin.calendarview.CalendarView;
+
+import org.w3c.dom.Text;
 
 public class CalendarFragment extends Fragment {
 
@@ -23,14 +24,36 @@ public class CalendarFragment extends Fragment {
         calendarViewModel =
                 new ViewModelProvider(this).get(CalendarViewModel.class);
         View root = inflater.inflate(R.layout.fragment_calendar, container, false);
-        final TextView textView = root.findViewById(R.id.text_calendar);
-        calendarViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+//        final TextView textView = root.findViewById(R.id.text_calendar);
+//        calendarViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+//            @Override
+//            public void onChanged(@Nullable String s) {
+//                textView.setText(s);
+//            }
+//        });
+
+        TextView monthTextView = root.findViewById(R.id.text_month);
+        TextView yearTextView = root.findViewById(R.id.text_year);
+        CalendarView calendarView = root.findViewById(R.id.calendarView);
+
+        monthTextView.setText(translateMonthToString(calendarView.getCurMonth()));
+        yearTextView.setText(((Integer)calendarView.getCurYear()).toString());
+
+        calendarView.setOnMonthChangeListener(new CalendarView.OnMonthChangeListener() {
             @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
+            public void onMonthChange(int year, int month) {
+                monthTextView.setText(translateMonthToString(month));
+                yearTextView.setText(((Integer)year).toString());
             }
         });
         return root;
+    }
+
+    public String translateMonthToString(Integer month) {
+        if (month <= 9)
+            return "0" + month.toString();
+        else
+            return month.toString();
     }
 
 }
