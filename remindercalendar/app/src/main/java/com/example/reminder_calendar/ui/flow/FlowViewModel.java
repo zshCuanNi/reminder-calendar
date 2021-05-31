@@ -10,7 +10,7 @@ public class FlowViewModel extends ViewModel {
 
     public FlowViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is home fragment");
+        mText.setValue("This is flow fragment");
     }
 
     public LiveData<String> getText() {
