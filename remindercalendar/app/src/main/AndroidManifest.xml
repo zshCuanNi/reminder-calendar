@@ -8,6 +8,10 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Remindercalendar" />
+        android:theme="@style/Theme.Remindercalendar">
+        <activity
+            android:name=".HomeActivity"
+            android:label="@string/title_activity_home"></activity>
+    </application>
 
 </manifest>
