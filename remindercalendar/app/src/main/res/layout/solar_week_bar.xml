@@ -4,7 +4,7 @@
     android:id="@+id/ll_week"
     android:layout_width="match_parent"
     android:layout_height="40dp"
-    android:background="@color/solar_background"
+    android:background="@color/galaxy_background"
     android:minHeight="40dp"
     android:orientation="horizontal"
     android:paddingBottom="8dp"

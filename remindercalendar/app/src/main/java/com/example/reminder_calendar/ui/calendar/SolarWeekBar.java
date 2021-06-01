@@ -11,7 +11,7 @@ public final class SolarWeekBar extends WeekBar {
     public SolarWeekBar(Context context) {
         super(context);
         LayoutInflater.from(context).inflate(R.layout.solar_week_bar, this, true);
-        setBackgroundColor(context.getResources().getColor(R.color.solar_background));
+        setBackgroundColor(context.getResources().getColor(R.color.galaxy_background));
     }
 
     /**
@@ -34,7 +34,7 @@ public final class SolarWeekBar extends WeekBar {
      * @return 或者周文本
      */
     private String getWeekString(int index, int weekStart) {
-        String[] weeks = { "MON", "TUE", "THU", "WED", "FRI", "SAT", "SUN"};//getContext().getResources().getStringArray(R.array.english_week_string_array);
+        String[] weeks = { "SUN", "MON", "TUE", "THU", "WED", "FRI", "SAT"};
 
         if (weekStart == 1) {
             return weeks[index];
