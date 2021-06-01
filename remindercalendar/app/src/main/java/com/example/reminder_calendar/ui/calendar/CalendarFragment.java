@@ -1,6 +1,7 @@
 package com.example.reminder_calendar.ui.calendar;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,8 @@ import com.haibin.calendarview.CalendarView;
 
 import org.w3c.dom.Text;
 
+import static android.content.ContentValues.TAG;
+
 public class CalendarFragment extends Fragment {
 
     private CalendarViewModel calendarViewModel;
@@ -24,6 +27,7 @@ public class CalendarFragment extends Fragment {
         calendarViewModel =
                 new ViewModelProvider(this).get(CalendarViewModel.class);
         View root = inflater.inflate(R.layout.fragment_calendar, container, false);
+        Log.e("TAG", "onCreateView: get_in");
 //        final TextView textView = root.findViewById(R.id.text_calendar);
 //        calendarViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
 //            @Override
@@ -38,6 +42,8 @@ public class CalendarFragment extends Fragment {
 
         monthTextView.setText(translateMonthToString(calendarView.getCurMonth()));
         yearTextView.setText(((Integer)calendarView.getCurYear()).toString());
+
+        Log.e("TAG", calendarView.getMonthViewPager().toString());
 
         calendarView.setOnMonthChangeListener(new CalendarView.OnMonthChangeListener() {
             @Override
