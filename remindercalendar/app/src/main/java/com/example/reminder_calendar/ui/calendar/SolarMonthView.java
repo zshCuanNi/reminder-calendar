@@ -29,7 +29,6 @@ public final class SolarMonthView extends MonthView {
 
     public SolarMonthView(Context context) {
         super(context);
-        Log.e("TAG", "SolarMonthView: get_in");
 
         mPointPaint.setAntiAlias(true);
         mPointPaint.setStyle(Paint.Style.FILL);
@@ -53,23 +52,18 @@ public final class SolarMonthView extends MonthView {
         int cy = y + mItemHeight / 2;
         canvas.drawCircle(cx, cy, mRadius, mSelectedPaint);
 
-        if (!calendar.getScheme().isEmpty()) {
+        if (hasScheme && !calendar.getScheme().isEmpty()) {
             List<Calendar.Scheme> schemes = calendar.getSchemes();
 
-            mPointPaint.setColor(schemes.get(0).getShcemeColor());//You can also use three fixed Paint 你也可以使用三个Paint对象
-            int rightTopX = (int) (cx + mRadius * Math.cos(-10 * Math.PI / 180));
-            int rightTopY = (int) (cy + mRadius * Math.sin(-10 * Math.PI / 180));
-            canvas.drawCircle(rightTopX, rightTopY, mPointRadius, mPointPaint);
-
-            mPointPaint.setColor(schemes.get(1).getShcemeColor());
-            int leftTopX = (int) (cx + mRadius * Math.cos(-140 * Math.PI / 180));
-            int leftTopY = (int) (cy + mRadius * Math.sin(-140 * Math.PI / 180));
-            canvas.drawCircle(leftTopX, leftTopY, mPointRadius, mPointPaint);
-
-            mPointPaint.setColor(schemes.get(2).getShcemeColor());
-            int bottomX = (int) (cx + mRadius * Math.cos(100 * Math.PI / 180));
-            int bottomY = (int) (cy + mRadius * Math.sin(100 * Math.PI / 180));
-            canvas.drawCircle(bottomX, bottomY, mPointRadius, mPointPaint);
+            for (Calendar.Scheme i : schemes) {
+                mPointPaint.setColor(i.getShcemeColor());
+                String[] time = i.getScheme().split(":");
+                Integer hour = Integer.valueOf(time[0]), minite = Integer.valueOf(time[1]);
+                double angle = (hour + minite / 60.) / 24. * 360.;
+                int rightTopX = (int) (cx + mRadius * Math.cos(angle * Math.PI / 180));
+                int rightTopY = (int) (cy + mRadius * Math.sin(angle * Math.PI / 180));
+                canvas.drawCircle(rightTopX, rightTopY, mPointRadius, mPointPaint);
+            }
         }
         return false;
     }
@@ -82,21 +76,15 @@ public final class SolarMonthView extends MonthView {
 
         List<Calendar.Scheme> schemes = calendar.getSchemes();
 
-        mPointPaint.setColor(schemes.get(0).getShcemeColor());//You can also use three fixed Paint 你也可以使用三个Paint对象
-        int rightTopX = (int) (cx + mSchemeRadius * Math.cos(-10 * Math.PI / 180));
-        int rightTopY = (int) (cy + mSchemeRadius * Math.sin(-10 * Math.PI / 180));
-        canvas.drawCircle(rightTopX, rightTopY, mPointRadius, mPointPaint);
-
-        mPointPaint.setColor(schemes.get(1).getShcemeColor());
-        int leftTopX = (int) (cx + mSchemeRadius * Math.cos(-140 * Math.PI / 180));
-        int leftTopY = (int) (cy + mSchemeRadius * Math.sin(-140 * Math.PI / 180));
-        canvas.drawCircle(leftTopX, leftTopY, mPointRadius, mPointPaint);
-
-        mPointPaint.setColor(schemes.get(2).getShcemeColor());
-        int bottomX = (int) (cx + mSchemeRadius * Math.cos(100 * Math.PI / 180));
-        int bottomY = (int) (cy + mSchemeRadius * Math.sin(100 * Math.PI / 180));
-        canvas.drawCircle(bottomX, bottomY, mPointRadius, mPointPaint);
-
+        for (Calendar.Scheme i : schemes) {
+            mPointPaint.setColor(i.getShcemeColor());
+            String[] time = i.getScheme().split(":");
+            Integer hour = Integer.valueOf(time[0]), minite = Integer.valueOf(time[1]);
+            double angle = (hour + minite / 60.) / 24. * 360.;
+            int rightTopX = (int) (cx + mSchemeRadius * Math.cos(angle * Math.PI / 180));
+            int rightTopY = (int) (cy + mSchemeRadius * Math.sin(angle * Math.PI / 180));
+            canvas.drawCircle(rightTopX, rightTopY, mPointRadius, mPointPaint);
+        }
     }
 
     @Override
