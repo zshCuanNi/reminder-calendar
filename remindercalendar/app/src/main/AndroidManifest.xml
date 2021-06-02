@@ -9,10 +9,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Remindercalendar">
+        <activity android:name=".ItemDetailActivity"></activity>
         <activity
             android:name=".ToDoOneDayActivity"
             android:label="@string/title_activity_to_do_one_day"
-            android:theme="@style/Theme.Remindercalendar.NoActionBar"></activity>
+            android:theme="@style/Theme.Remindercalendar.NoActionBar" />
         <activity
             android:name=".HomeActivity"
             android:label="@string/title_activity_home">
