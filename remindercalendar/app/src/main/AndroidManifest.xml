@@ -10,10 +10,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Remindercalendar">
         <activity
+            android:name=".ToDoOneDayActivity"
+            android:label="@string/title_activity_to_do_one_day"
+            android:theme="@style/Theme.Remindercalendar.NoActionBar"></activity>
+        <activity
             android:name=".HomeActivity"
             android:label="@string/title_activity_home">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
