@@ -15,6 +15,7 @@
     <string name="element_text">\"hello, just for test\"</string>
     <string name="detail_date_hint">今天是几号呢</string>
     <string name="detail_content_hint">今天要做些什么呢</string>
+    <string name="detail_title_hint">标题</string>
     <string name="detail_time_hint">几点来做呢</string>
 
 </resources>

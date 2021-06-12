@@ -23,7 +23,8 @@ import java.util.List;
 
 public class ToDoOneDayRecyclerAdapter extends RecyclerView.Adapter<ToDoOneDayRecyclerAdapter.ViewHolder> {
 
-    private ArrayList<String> localDataSet = new ArrayList<String>();
+    private ArrayList<String> localTitleDataSet = new ArrayList<String>();
+    private ArrayList<String> localContentDataSet = new ArrayList<String>();
     static private Activity activity;
 
     /**
@@ -31,7 +32,8 @@ public class ToDoOneDayRecyclerAdapter extends RecyclerView.Adapter<ToDoOneDayRe
      * (custom ViewHolder).
      */
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private final TextView textView;
+        private final TextView contentTextView;
+        private final TextView titleTextView;
 
         public ViewHolder(View view) {
             super(view);
@@ -41,30 +43,35 @@ public class ToDoOneDayRecyclerAdapter extends RecyclerView.Adapter<ToDoOneDayRe
                 public void onClick(View v) {
                     //传递数据，指示点击的是哪个item
                     Bundle bundle = new Bundle();
-                    bundle.putString("text", (String) textView.getText());
+                    bundle.putString("content", (String) contentTextView.getText());
+                    bundle.putString("title", (String) titleTextView.getText());
                     Integer position = getAdapterPosition();
                     bundle.putInt("position", position);
+                    bundle.putString("date","2018-01-01");
                     Intent intent = new Intent(activity, ItemDetailActivity.class);
                     intent.putExtra("bundle",bundle);
                     activity.startActivityForResult(intent,0);
                 }
             });
-            textView = (TextView) view.findViewById(R.id.textView);
+            contentTextView = (TextView) view.findViewById(R.id.contentTextView);
+            titleTextView = (TextView) view.findViewById(R.id.titleTextView);
         }
 
-        public TextView getTextView() {
-            return textView;
+        public TextView getContentTextView() {
+            return contentTextView;
+        }
+        public TextView getTitleTextView() {
+            return titleTextView;
         }
     }
 
     /**
      * Initialize the dataset of the Adapter.
      *
-     * @param dataSet String[] containing the data to populate views to be used
-     * by RecyclerView.
      */
-    public ToDoOneDayRecyclerAdapter(List<String> dataSet, Activity activity) {
-        localDataSet.addAll(dataSet);
+    public ToDoOneDayRecyclerAdapter(List<String> titleDataSet, List<String> contentDataSet, Activity activity) {
+        localTitleDataSet.addAll(titleDataSet);
+        localContentDataSet.addAll(contentDataSet);
         this.activity = activity;
     }
 
@@ -84,31 +91,35 @@ public class ToDoOneDayRecyclerAdapter extends RecyclerView.Adapter<ToDoOneDayRe
 
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
-        viewHolder.getTextView().setText(localDataSet.get(position));
+        viewHolder.getTitleTextView().setText(localTitleDataSet.get(position));
+        viewHolder.getContentTextView().setText(localContentDataSet.get(position));
     }
 
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return localDataSet.size();
+        return localTitleDataSet.size();
     }
     
     //用于增删数据的方法
     //移除数据
     public void removeData(int position) {
-        localDataSet.remove(position);
+        localTitleDataSet.remove(position);
+        localContentDataSet.remove(position);
         notifyItemRemoved(position);
     }
 
     //新增数据
-    public void addData(String text) {
-        localDataSet.add(text);
-        notifyItemInserted(localDataSet.size());
+    public void addData(String title, String content) {
+        localTitleDataSet.add(title);
+        localContentDataSet.add(content);
+        notifyItemInserted(localTitleDataSet.size());
     }
 
     //更改某个位置的数据
-    public void changeData(int position, String text) {
-        localDataSet.set(position, text);
+    public void changeData(int position, String title, String content) {
+        localTitleDataSet.set(position, title);
+        localContentDataSet.set(position, content);
         notifyItemChanged(position);
     }
 }

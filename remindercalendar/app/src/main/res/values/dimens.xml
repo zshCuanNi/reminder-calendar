@@ -6,4 +6,5 @@
     <dimen name="list_item_height">200dp</dimen>
     <dimen name="list_item_card_height">180dp</dimen>
     <dimen name="margin_medium">10dp</dimen>
+    <dimen name="list_item_title_width">100dp</dimen>
 </resources>
