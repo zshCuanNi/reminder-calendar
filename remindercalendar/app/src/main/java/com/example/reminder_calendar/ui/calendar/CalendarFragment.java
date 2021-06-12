@@ -1,7 +1,10 @@
 package com.example.reminder_calendar.ui.calendar;
 
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +14,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -19,13 +23,31 @@ import com.haibin.calendarview.Calendar;
 import com.haibin.calendarview.CalendarView;
 
 
-import java.util.HashMap;
-import java.util.Map;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import static android.content.ContentValues.TAG;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class CalendarFragment extends Fragment {
-    final int[] Colors = {
+
+    public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+    private OkHttpClient okHttpClient = new OkHttpClient();
+    private static final String SERVERURL = "http://10.0.2.2:8848";
+    private static final String LOCALURL = "http://10.0.2.2:8848";
+    private String username = "";
+    final static int GET = 0;
+    final static int[] Colors = {
             0xBB990033, 0xBBCC6699, 0xBBFF6699, 0xBBFF3366, 0xBB993366, 0xBBCC0066, 0xBBCC0033, 0xBBFF0066, 0xBBFF0033,
             0xBBCC3399, 0xBBFF3399, 0xBBFF9999, 0xBBFF99CC, 0xBBFF0099, 0xBBCC3366, 0xBBFF66CC, 0xBBFF33CC, 0xBBFFCCFF,
             0xBBFF99FF, 0xBBFF00CC, 0xBBFF66FF, 0xBBCC33CC, 0xBBCC00FF, 0xBBFF33FF, 0xBBCC99FF, 0xBB9900CC, 0xBBFF00FF,
@@ -51,8 +73,13 @@ public class CalendarFragment extends Fragment {
             0xBBCCCC99, 0xBBCCFFFF, 0xBB33CC99, 0xBB66CC66, 0xBB66CC99, 0xBB00FF33, 0xBB009900, 0xBB669900, 0xBB669933,
             0xBBCCCC00, 0xBB0FFFFF, 0xBBCCCCCC, 0xBB999999, 0xBB666666, 0xBB333333, 0xBB000000
     };
+    List<String> headline = new ArrayList<>();
+    List<String> detail = new ArrayList<>();
+    List<String> strDeadline = new ArrayList<>();
+    List<LocalDateTime> deadline = new ArrayList<>();
 
     private CalendarViewModel mCalendarViewModel;
+    ImageButton detailButton;
     ImageButton addButton;
     TextView monthTextView;
     TextView yearTextView;
@@ -65,20 +92,29 @@ public class CalendarFragment extends Fragment {
                 new ViewModelProvider(this).get(CalendarViewModel.class);
         View root = inflater.inflate(R.layout.fragment_calendar, container, false);
 
+        detailButton = root.findViewById(R.id.btn_detail);
         addButton = root.findViewById(R.id.btn_add);
         monthTextView = root.findViewById(R.id.text_month);
         yearTextView = root.findViewById(R.id.text_year);
         mCalendarView = root.findViewById(R.id.calendarView);
 
+        detailButton.setBackgroundResource(R.drawable.ic_detail);
         addButton.setBackgroundResource(R.drawable.ic_add);
         monthTextView.setText(translateMonthToString(mCalendarView.getCurMonth()));
         yearTextView.setText(((Integer)mCalendarView.getCurYear()).toString());
 
+        detailButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 通过mCalendar.getSelectedCalendar获得当前时期
+                // 跳转到为某一天添加事项
+            }
+        });
         addButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 Calendar selectedCalendar = mCalendarView.getSelectedCalendar();
-                Integer hour = (int)Math.floor(Math.random() * 12);
+                Integer hour = (int)Math.floor(Math.random() * 24);
                 Integer minute = (int)Math.floor((Math.random() * 60));
                 Calendar schemeCalendar = getSchemeCalendar(
                         selectedCalendar,
@@ -98,7 +134,8 @@ public class CalendarFragment extends Fragment {
             }
         });
 
-        initData();
+        // initData();
+
         return root;
     }
 
@@ -106,7 +143,7 @@ public class CalendarFragment extends Fragment {
         int year = mCalendarView.getCurYear();
         int month = mCalendarView.getCurMonth();
 
-
+        getDataFromGet(SERVERURL + "/api/allMemos?username=" + username, GET);
     }
 
     private Calendar getSchemeCalendar(Calendar calendar, int year, int month, int day, String text) {
@@ -129,4 +166,89 @@ public class CalendarFragment extends Fragment {
             return month.toString();
     }
 
+    /**
+     * 解析get返回的json包
+     * @param json get返回的json包
+     * @throws JSONException 解析出错
+     */
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void parseJsonPacket(String json) throws JSONException {
+        JSONObject jsonObject = new JSONObject(json);
+
+        JSONArray memoList = jsonObject.getJSONArray("data");
+        // update data
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm");
+        LocalDateTime dd;
+        Calendar schemeCalendar;
+
+        for (int i = 0; i < memoList.length(); i++) {
+            headline.add(memoList.getJSONObject(i).getString("headline"));
+            detail.add(memoList.getJSONObject(i).getString("detail"));
+            strDeadline.add(memoList.getJSONObject(i).getString("deadline"));
+
+            dd = LocalDateTime.parse(strDeadline.get(i), formatter);
+            deadline.add(dd);
+
+            schemeCalendar = getSchemeCalendar(
+                    new Calendar(),
+                    dd.getYear(),
+                    dd.getMonthValue(),
+                    dd.getDayOfMonth(),
+                    ((Integer)dd.getHour()).toString() + ":" + ((Integer)dd.getMinute()).toString());
+            mCalendarView.addSchemeDate(schemeCalendar);
+        }
+    }
+
+    // 处理get请求的回调函数
+    private Handler getHandler = new Handler(new Handler.Callback() {
+        @RequiresApi(api = Build.VERSION_CODES.O)
+        @Override
+        public boolean handleMessage(@NonNull Message msg) {
+            try {
+                if (msg.what == GET) {
+                    parseJsonPacket((String) msg.obj);
+                    // updateView();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return true;
+        }
+    });
+
+    // 使用get获取数据
+    private void getDataFromGet(String url, int what) {
+        new Thread() {
+            @Override
+            public void run() {
+                super.run();
+                Message msg;
+                try {
+                    if (what == GET) {
+                        String result = get(url);
+                        msg = Message.obtain();
+                        msg.what = GET;
+                        msg.obj = result;
+                        getHandler.sendMessage(msg);
+                    }
+                } catch (java.io.IOException IOException) {
+                    Log.e("TAG", "get failed.");
+                }
+            }
+        }.start();
+    }
+
+    /**
+     * Okhttp的get请求
+     * @param url
+     * @return 服务器返回的字符串
+     * @throws IOException
+     */
+    private String get(String url) throws IOException {
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+        Response response = okHttpClient.newCall(request).execute();
+        return response.body().string();
+    }
 }
