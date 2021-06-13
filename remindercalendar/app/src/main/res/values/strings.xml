@@ -21,8 +21,10 @@
     <string name="welcome">欢迎！</string>
     <string name="invalid_username">用户名不能为空</string>
     <string name="invalid_password">密码不能短于6个字符</string>
+    <string name="invalid_email">无效的邮箱</string>
     <string name="action_sign_in">登录</string>
     <string name="shift_to_register"><u>没有账号？来建立一个吧！</u></string>
+    <string name="password_mismatch">输入密码不一致</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="prompt_password">Password</string>
     <string name="prompt_email">Email</string>

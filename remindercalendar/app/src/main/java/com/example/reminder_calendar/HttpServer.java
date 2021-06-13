@@ -20,5 +20,6 @@ public class HttpServer {
 
     public static final String SERVERURL = "http://10.0.2.2:8848";
     public static final String LOCALURL = "http://10.0.2.2:8848";
+    public static final String CURRENTURL = LOCALURL;
     public static final OkHttpClient client = new OkHttpClient();
 }

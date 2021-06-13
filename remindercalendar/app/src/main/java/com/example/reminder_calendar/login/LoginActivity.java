@@ -30,6 +30,7 @@ import com.example.BaiTuanTong_Frontend.utils.MD5Util;
 import com.example.reminder_calendar.databinding.ActivityLoginBinding;
 import com.example.reminder_calendar.databinding.ActivityToDoOneDayBinding;
 import com.example.reminder_calendar.R;
+import com.example.reminder_calendar.register.RegistActivity;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
@@ -143,7 +144,7 @@ public class LoginActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_login);
 
-        //Intent intentShift = new Intent(this, RegistActivity.class);
+        Intent intentShift = new Intent(this, RegistActivity.class);
 
         loginViewModel = new ViewModelProvider(this, new LoginViewModelFactory())
                 .get(LoginViewModel.class);
@@ -232,7 +233,7 @@ public class LoginActivity extends AppCompatActivity {
         shiftToRegButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                startActivity(intentShift);
+                startActivity(intentShift);
             }
         });
     }

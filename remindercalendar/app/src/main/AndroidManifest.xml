@@ -13,6 +13,7 @@
         android:theme="@style/Theme.Remindercalendar">
 
         <activity android:name=".ItemDetailActivity"/>
+        <activity android:name=".register.RegistActivity"/>
         <activity
             android:name=".ToDoOneDayActivity"
             android:label="@string/title_activity_to_do_one_day"
