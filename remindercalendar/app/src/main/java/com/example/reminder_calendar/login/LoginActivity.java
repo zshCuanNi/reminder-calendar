@@ -78,59 +78,59 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     //处理异步线程发来的消息
-    private Handler getHandler = new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(@NonNull Message msg) {
-            //Log.e("handler",(String)msg.obj);
-            //super.handleMessage(msg);
-            if(msg.what == POST) {
-                retry_time = 0;
-                try {
-                    String msgBody = (String) msg.obj;
-                    if (msgBody.equals("wrong password") || msgBody.equals("wrong username")) {
-                        Toast.makeText(LoginActivity.this, R.string.login_failed, Toast.LENGTH_SHORT).show();
-                    } else if (msgBody.equals("system administrator login")) {
-                        startManagerHomePage();
-                        String welcomeMessage = "欢迎！管理员";
-                        Toast.makeText(LoginActivity.this, welcomeMessage, Toast.LENGTH_SHORT).show();
-                    } else {
-                        JSONObject jsonObject = new JSONObject((String) msgBody);
-                        String userId = jsonObject.getString("userId");
-                        Log.e("Toast", userId);
-                        //共享参数对象，用来全局共享userId
-                        SharedPreferences shared = getSharedPreferences("share", MODE_PRIVATE);
-                        SharedPreferences.Editor editor = shared.edit();
-                        // 把userId(String)放到全局变量userId中
-                        // 取出只需调用shared.getString
-                        editor.putString("userId", userId);
-                        editor.putString("userName", username);
-                        editor.putBoolean("logged", true);
-                        editor.commit();// 提交编辑
-
-                        String welcomeMessage = "欢迎！" + username;
-                        Toast.makeText(LoginActivity.this, welcomeMessage, Toast.LENGTH_SHORT).show();
-                        startHomePage();
-                    }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-
-                }
-            }
-            else if(msg.what == POSTFAIL){
-                if(retry_time < 3) { //尝试三次，如果不行就放弃
-                    retry_time++;
-                    String json = (String)msg.obj;
-                    getDataFromPost(LOCALURL+"user/login", json);
-                }
-                else {
-                    retry_time = 0;
-                }
-            }
-
-            return true;
-        }
-    });
+//    private Handler getHandler = new Handler(new Handler.Callback() {
+//        @Override
+//        public boolean handleMessage(@NonNull Message msg) {
+//            //Log.e("handler",(String)msg.obj);
+//            //super.handleMessage(msg);
+//            if(msg.what == POST) {
+//                retry_time = 0;
+//                try {
+//                    String msgBody = (String) msg.obj;
+//                    if (msgBody.equals("wrong password") || msgBody.equals("wrong username")) {
+//                        Toast.makeText(LoginActivity.this, R.string.login_failed, Toast.LENGTH_SHORT).show();
+//                    } else if (msgBody.equals("system administrator login")) {
+//                        startManagerHomePage();
+//                        String welcomeMessage = "欢迎！管理员";
+//                        Toast.makeText(LoginActivity.this, welcomeMessage, Toast.LENGTH_SHORT).show();
+//                    } else {
+//                        JSONObject jsonObject = new JSONObject((String) msgBody);
+//                        String userId = jsonObject.getString("userId");
+//                        Log.e("Toast", userId);
+//                        //共享参数对象，用来全局共享userId
+//                        SharedPreferences shared = getSharedPreferences("share", MODE_PRIVATE);
+//                        SharedPreferences.Editor editor = shared.edit();
+//                        // 把userId(String)放到全局变量userId中
+//                        // 取出只需调用shared.getString
+//                        editor.putString("userId", userId);
+//                        editor.putString("userName", username);
+//                        editor.putBoolean("logged", true);
+//                        editor.commit();// 提交编辑
+//
+//                        String welcomeMessage = "欢迎！" + username;
+//                        Toast.makeText(LoginActivity.this, welcomeMessage, Toast.LENGTH_SHORT).show();
+//                        startHomePage();
+//                    }
+//
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//
+//                }
+//            }
+//            else if(msg.what == POSTFAIL){
+//                if(retry_time < 3) { //尝试三次，如果不行就放弃
+//                    retry_time++;
+//                    String json = (String)msg.obj;
+//                    getDataFromPost(LOCALURL+"user/login", json);
+//                }
+//                else {
+//                    retry_time = 0;
+//                }
+//            }
+//
+//            return true;
+//        }
+//    });
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -223,7 +223,8 @@ public class LoginActivity extends AppCompatActivity {
                 map.put("password", password);
                 Gson gson = new Gson();
                 String data = gson.toJson(map);
-                getDataFromPost(LOCALURL+"user/login", data);
+                //getDataFromPost(LOCALURL+"user/login", data);
+                startHomePage();
             }
         });
 
@@ -263,28 +264,28 @@ public class LoginActivity extends AppCompatActivity {
     //okhttp方法集合
 
     //从post获取数据
-    private void getDataFromPost(String url, String json) {
-        //Log.e("TAG", "Start getDataFromGet()");
-        new Thread(){
-            @Override
-            public void run() {
-                super.run();
-                //Log.e("TAG", "new thread run.");
-                try {
-                    String result = post(url, json); //jason用于上传数据，目前不需要
-                    Log.e("result", result);
-                    Message msg = Message.obtain();
-                    msg.what = POST;
-                    msg.obj = result;
-                    getHandler.sendMessage(msg);
-                } catch (java.io.IOException IOException) {
-                    Log.e("TAG", "post failed.");
-                    Message msg = Message.obtain();
-                    msg.what = POSTFAIL;
-                    msg.obj = json;
-                    getHandler.sendMessage(msg);
-                }
-            }
-        }.start();
-    }
+//    private void getDataFromPost(String url, String json) {
+//        //Log.e("TAG", "Start getDataFromGet()");
+//        new Thread(){
+//            @Override
+//            public void run() {
+//                super.run();
+//                //Log.e("TAG", "new thread run.");
+//                try {
+//                    String result = post(url, json); //jason用于上传数据，目前不需要
+//                    Log.e("result", result);
+//                    Message msg = Message.obtain();
+//                    msg.what = POST;
+//                    msg.obj = result;
+//                    getHandler.sendMessage(msg);
+//                } catch (java.io.IOException IOException) {
+//                    Log.e("TAG", "post failed.");
+//                    Message msg = Message.obtain();
+//                    msg.what = POSTFAIL;
+//                    msg.obj = json;
+//                    getHandler.sendMessage(msg);
+//                }
+//            }
+//        }.start();
+//    }
 }
