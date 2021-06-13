@@ -3,4 +3,19 @@
     <string name="title_activity_home">MainActivity</string>
     <string name="title_calendar">Calendar</string>
     <string name="title_flow">Flow</string>
+    <string name="title_activity_to_do_one_day">ToDoOneDayActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="element_text">\"hello, just for test\"</string>
+    <string name="detail_date_hint">今天是几号呢</string>
+    <string name="detail_content_hint">今天要做些什么呢</string>
+    <string name="detail_title_hint">标题</string>
+    <string name="detail_time_hint">几点来做呢</string>
+
 </resources>
