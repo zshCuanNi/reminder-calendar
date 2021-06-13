@@ -47,6 +47,7 @@ public class ToDoOneDayActivity extends AppCompatActivity {
     private static final String LOCALURL = "http://10.0.2.2:8848";
     private static String date = "2000-01-01";
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,11 +76,11 @@ public class ToDoOneDayActivity extends AppCompatActivity {
         recyclerView.scrollToPosition(scrollPosition);
 
 
-        for(int i=0;i<10;i++) {
+        for(int i=0;i<0;i++) {
             titleDataSet.add("title" + i);
             contentDataSet.add("content"+i);
         }
-        toDoOneDayRecyclerAdapter = new ToDoOneDayRecyclerAdapter(titleDataSet, contentDataSet, ToDoOneDayActivity.this);
+        toDoOneDayRecyclerAdapter = new ToDoOneDayRecyclerAdapter(titleDataSet, contentDataSet, date, ToDoOneDayActivity.this);
         recyclerView.setAdapter(toDoOneDayRecyclerAdapter);
 
         //添加一条事件
@@ -87,7 +88,7 @@ public class ToDoOneDayActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Bundle bundle = new Bundle();
-                bundle.putString("date","2018-01-01");
+                bundle.putString("date",date);
                 bundle.putInt("requestCode", 1);
                 Intent intent = new Intent(ToDoOneDayActivity.this, ItemDetailActivity.class);
                 intent.putExtra("bundle",bundle);
@@ -119,12 +120,19 @@ public class ToDoOneDayActivity extends AppCompatActivity {
         Integer position = bundle.getInt("position");
         String newContent = bundle.getString("content");
         String newTitle = bundle.getString("title");
-        switch (requestCode){
-            case 0:
+        switch (resultCode){
+            case FlagValues.editMemoFlag:
                 toDoOneDayRecyclerAdapter.changeData(position,newTitle,newContent);
                 break;
-            case 1:
+            case FlagValues.newMemoFlag:
                 toDoOneDayRecyclerAdapter.addData(newTitle, newContent);
+                break;
+            case FlagValues.deleteMemoFlag:
+                toDoOneDayRecyclerAdapter.removeData(position);
+                break;
+            case FlagValues.doNothingFlag:
+                break;
+            default:
         }
 
     }

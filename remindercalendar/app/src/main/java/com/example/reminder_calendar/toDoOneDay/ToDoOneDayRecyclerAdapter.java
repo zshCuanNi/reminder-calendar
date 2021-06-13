@@ -19,6 +19,7 @@ import com.example.reminder_calendar.R;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class ToDoOneDayRecyclerAdapter extends RecyclerView.Adapter<ToDoOneDayRecyclerAdapter.ViewHolder> {
@@ -26,6 +27,7 @@ public class ToDoOneDayRecyclerAdapter extends RecyclerView.Adapter<ToDoOneDayRe
     private ArrayList<String> localTitleDataSet = new ArrayList<String>();
     private ArrayList<String> localContentDataSet = new ArrayList<String>();
     static private Activity activity;
+    private static String strDate;
 
     /**
      * Provide a reference to the type of views that you are using
@@ -47,7 +49,7 @@ public class ToDoOneDayRecyclerAdapter extends RecyclerView.Adapter<ToDoOneDayRe
                     bundle.putString("title", (String) titleTextView.getText());
                     Integer position = getAdapterPosition();
                     bundle.putInt("position", position);
-                    bundle.putString("date","2018-01-01");
+                    bundle.putString("date",strDate);
                     bundle.putInt("requestCode", 0);
                     Intent intent = new Intent(activity, ItemDetailActivity.class);
                     intent.putExtra("bundle",bundle);
@@ -71,9 +73,10 @@ public class ToDoOneDayRecyclerAdapter extends RecyclerView.Adapter<ToDoOneDayRe
      * Initialize the dataset of the Adapter.
      *
      */
-    public ToDoOneDayRecyclerAdapter(List<String> titleDataSet, List<String> contentDataSet, Activity activity) {
+    public ToDoOneDayRecyclerAdapter(List<String> titleDataSet, List<String> contentDataSet, String strDate, Activity activity) {
         localTitleDataSet.addAll(titleDataSet);
         localContentDataSet.addAll(contentDataSet);
+        this.strDate = strDate;
         this.activity = activity;
     }
 

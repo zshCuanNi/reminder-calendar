@@ -53,7 +53,7 @@ public class ItemDetailActivity extends AppCompatActivity {
             calendar.set(Calendar.MONTH, month);
             calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
             newDate = calendar.getTime();
-            dateText.setText(simpleDateFormat.format(calendar.getTime()));
+            dateText.setText(simpleDateFormat.format(newDate));
         }
     };
     //private FinishOnClickInterface finishOnClickInterface;
@@ -65,9 +65,8 @@ public class ItemDetailActivity extends AppCompatActivity {
     private static final String LOCALURL = "http://10.0.2.2:8848";
 
     private Integer requestCode;    //新增是1，编辑是0
-    private static final int newMemoFlag = 1;
-    private static final int editMemoFlag = 0;
-    private static final int deleteMemoFlag = 2;
+    private Integer resultCode;     //新增是1，编辑是0，删除新增(什么都不做)是2，删除已有是3
+
 
 
     @Override
@@ -102,6 +101,7 @@ public class ItemDetailActivity extends AppCompatActivity {
             if(!strDate.equals("null")) {
                 try {
                     oriDate = simpleDateFormat.parse(strDate);
+                    newDate = simpleDateFormat.parse(strDate);
                     dateText.setText(strDate);
                 } catch (ParseException e) {
                     e.printStackTrace();
@@ -130,7 +130,7 @@ public class ItemDetailActivity extends AppCompatActivity {
                 alertdialogbuilder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        finishEditing(deleteMemoFlag);
+                        finishEditing(FlagValues.deleteMemoFlag);
                     }
                 });
                 alertdialogbuilder.setNeutralButton("取消", new DialogInterface.OnClickListener() {
@@ -162,46 +162,55 @@ public class ItemDetailActivity extends AppCompatActivity {
         JSONObject jsonObject = new JSONObject();
         String tmpURL;
         switch (flag){
-            case newMemoFlag:
-
+            case FlagValues.newMemoFlag:
+                if(titleEditText.getText().equals("") && contentEditText.getText().equals("")){
+                    resultCode = FlagValues.doNothingFlag;
+                    break;
+                }
                 try {
-                    jsonObject.put("deadline", "2019-01-01");
-                    jsonObject.put("detail", "detail test");
-                    jsonObject.put("headline", "headline test");
-                    jsonObject.put("username", "username test");
+                    jsonObject.put("deadline", dateText.getText());
+                    jsonObject.put("detail", contentEditText.getText());
+                    jsonObject.put("headline", titleEditText.getText());
+                    jsonObject.put("username", "zhp");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
                 tmpURL = LOCALURL+"/api/newMemo";
+                getDataFromPost(tmpURL, jsonObject.toString());
+                resultCode = requestCode;
                 break;
 
-            case editMemoFlag:
+            case FlagValues.editMemoFlag:
                 try {
-                    jsonObject.put("deadline", "2019-01-01");
-                    jsonObject.put("detail", "detail test");
-                    jsonObject.put("headline", "headline test");
-                    jsonObject.put("username", "username test");
+                    jsonObject.put("deadline", dateText.getText());
+                    jsonObject.put("detail", contentEditText.getText());
+                    jsonObject.put("headline", titleEditText.getText());
+                    jsonObject.put("id", 0);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
                 tmpURL = LOCALURL+"/api/newMemo";
+                getDataFromPost(tmpURL, jsonObject.toString());
+                resultCode = requestCode;
+                if(newDate!=null && !newDate.equals(oriDate))
+                    resultCode = FlagValues.deleteMemoFlag;
                 break;
-            case deleteMemoFlag:
+            case FlagValues.deleteMemoFlag:
                 try {
-                    jsonObject.put("deadline", "2019-01-01");
-                    jsonObject.put("detail", "detail test");
-                    jsonObject.put("headline", "headline test");
-                    jsonObject.put("username", "username test");
+                    jsonObject.put("id", 0);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
                 tmpURL = LOCALURL+"/api/newMemo";
+                getDataFromPost(tmpURL, jsonObject.toString());
+                if(requestCode==FlagValues.newMemoFlag){
+                    resultCode = FlagValues.doNothingFlag;
+                }else{
+                    resultCode = FlagValues.deleteMemoFlag;
+                }
                 break;
             default:
-                tmpURL = LOCALURL+"/api/newMemo";
         }
-
-        getDataFromPost(tmpURL, jsonObject.toString());
         Bundle bundle = new Bundle();
         if(position!=null)
             bundle.putInt("position", position);
@@ -209,7 +218,7 @@ public class ItemDetailActivity extends AppCompatActivity {
         bundle.putString("content", contentEditText.getText().toString());
         Intent intent = new Intent();
         intent.putExtra("bundle", bundle);
-        setResult(0, intent);
+        setResult(resultCode, intent);
         finish();
     }
 
