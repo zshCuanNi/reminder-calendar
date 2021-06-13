@@ -3,7 +3,9 @@ package com.example.reminder_calendar;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -62,6 +64,11 @@ public class ItemDetailActivity extends AppCompatActivity {
     private static final String SERVERURL = "http://10.0.2.2:8848";
     private static final String LOCALURL = "http://10.0.2.2:8848";
 
+    private Integer requestCode;    //新增是1，编辑是0
+    private static final int newMemoFlag = 1;
+    private static final int editMemoFlag = 0;
+    private static final int deleteMemoFlag = 2;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,9 +94,11 @@ public class ItemDetailActivity extends AppCompatActivity {
         Intent intent = getIntent();
         Bundle bundle = intent.getBundleExtra("bundle");
         if(bundle!=null){
-            String title = bundle.getString("title", "null");
-            String content = bundle.getString("content", "null");
+            String title = bundle.getString("title", "");
+            String content = bundle.getString("content", "");
             String strDate = bundle.getString("date","null");
+            requestCode = bundle.getInt("requestCode",0);
+
             if(!strDate.equals("null")) {
                 try {
                     oriDate = simpleDateFormat.parse(strDate);
@@ -105,10 +114,33 @@ public class ItemDetailActivity extends AppCompatActivity {
 
 
         //完成按钮
-        binding.fab.setOnClickListener(new View.OnClickListener() {
+        binding.fabComplete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                finishEditing();
+                finishEditing(requestCode);
+            }
+        });
+
+        //删除当前备忘按钮
+        binding.fabDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder alertdialogbuilder = new AlertDialog.Builder(ItemDetailActivity.this);
+                alertdialogbuilder.setMessage("删除当前备忘吗");
+                alertdialogbuilder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finishEditing(deleteMemoFlag);
+                    }
+                });
+                alertdialogbuilder.setNeutralButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+                alertdialogbuilder.create();
+                alertdialogbuilder.show();
             }
         });
     }
@@ -117,25 +149,59 @@ public class ItemDetailActivity extends AppCompatActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            finishEditing();
+            finishEditing(requestCode);
             return true;
         } else {
             return super.onKeyDown(keyCode, event);
         }
     }
 
-    public void finishEditing(){
+    public void finishEditing(int flag){
         //结束编辑，首先向后端发送请求信息
+
         JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("deadline", "2019-01-01");
-            jsonObject.put("detail", "detail test");
-            jsonObject.put("headline", "headline test");
-            jsonObject.put("username", "username test");
-        } catch (JSONException e) {
-            e.printStackTrace();
+        String tmpURL;
+        switch (flag){
+            case newMemoFlag:
+
+                try {
+                    jsonObject.put("deadline", "2019-01-01");
+                    jsonObject.put("detail", "detail test");
+                    jsonObject.put("headline", "headline test");
+                    jsonObject.put("username", "username test");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                tmpURL = LOCALURL+"/api/newMemo";
+                break;
+
+            case editMemoFlag:
+                try {
+                    jsonObject.put("deadline", "2019-01-01");
+                    jsonObject.put("detail", "detail test");
+                    jsonObject.put("headline", "headline test");
+                    jsonObject.put("username", "username test");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                tmpURL = LOCALURL+"/api/newMemo";
+                break;
+            case deleteMemoFlag:
+                try {
+                    jsonObject.put("deadline", "2019-01-01");
+                    jsonObject.put("detail", "detail test");
+                    jsonObject.put("headline", "headline test");
+                    jsonObject.put("username", "username test");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                tmpURL = LOCALURL+"/api/newMemo";
+                break;
+            default:
+                tmpURL = LOCALURL+"/api/newMemo";
         }
-        getDataFromPost(LOCALURL+"/api/newMemo", jsonObject.toString());
+
+        getDataFromPost(tmpURL, jsonObject.toString());
         Bundle bundle = new Bundle();
         if(position!=null)
             bundle.putInt("position", position);

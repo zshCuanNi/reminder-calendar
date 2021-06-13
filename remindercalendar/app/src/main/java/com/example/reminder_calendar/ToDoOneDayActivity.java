@@ -45,16 +45,26 @@ public class ToDoOneDayActivity extends AppCompatActivity {
     private OkHttpClient okHttpClient = new OkHttpClient();
     private static final String SERVERURL = "http://10.0.2.2:8848";
     private static final String LOCALURL = "http://10.0.2.2:8848";
+    private static String date = "2000-01-01";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Intent intent = getIntent();
+        Bundle bundle = intent.getBundleExtra("bundle");
+        if(bundle!=null){
+            date = bundle.getString("date","2000-01-01");
+        }
 
 
         binding = ActivityToDoOneDayBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         setSupportActionBar(binding.toolbar);
+        Log.e("date",date);
+        getSupportActionBar().setTitle(date);
+
 
         //创建事件列表
         recyclerView = binding.recyclerView;
@@ -78,14 +88,14 @@ public class ToDoOneDayActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Bundle bundle = new Bundle();
                 bundle.putString("date","2018-01-01");
+                bundle.putInt("requestCode", 1);
                 Intent intent = new Intent(ToDoOneDayActivity.this, ItemDetailActivity.class);
                 intent.putExtra("bundle",bundle);
+                //requestCode为1，代表是新增事件
                 startActivityForResult(intent,1);
             }
         });
 
-        toolbar = binding.toolbar;
-        toolbar.setTitle("a");
 
 
 

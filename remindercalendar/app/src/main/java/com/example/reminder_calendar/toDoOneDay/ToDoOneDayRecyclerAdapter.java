@@ -48,8 +48,10 @@ public class ToDoOneDayRecyclerAdapter extends RecyclerView.Adapter<ToDoOneDayRe
                     Integer position = getAdapterPosition();
                     bundle.putInt("position", position);
                     bundle.putString("date","2018-01-01");
+                    bundle.putInt("requestCode", 0);
                     Intent intent = new Intent(activity, ItemDetailActivity.class);
                     intent.putExtra("bundle",bundle);
+                    //requestCode为0，代表是编辑事件
                     activity.startActivityForResult(intent,0);
                 }
             });
