@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.reminder_calendar">
 
     <application
@@ -11,13 +12,15 @@
         android:networkSecurityConfig="@xml/network_security_config"
         android:theme="@style/Theme.Remindercalendar">
 
-        <activity android:name=".ItemDetailActivity"></activity>
+        <activity android:name=".ItemDetailActivity"/>
         <activity
             android:name=".ToDoOneDayActivity"
             android:label="@string/title_activity_to_do_one_day"
             android:theme="@style/Theme.Remindercalendar.NoActionBar" />
         <activity
-            android:name=".HomeActivity"
+            android:name=".HomeActivity">
+        </activity>
+        <activity android:name=".login.LoginActivity"
             android:label="@string/title_activity_home">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

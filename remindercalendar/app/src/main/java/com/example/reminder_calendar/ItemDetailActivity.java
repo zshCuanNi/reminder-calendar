@@ -60,9 +60,7 @@ public class ItemDetailActivity extends AppCompatActivity {
     private Integer position;
 
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-    private OkHttpClient okHttpClient = new OkHttpClient();
-    private static final String SERVERURL = "http://10.0.2.2:8848";
-    private static final String LOCALURL = "http://10.0.2.2:8848";
+    private OkHttpClient okHttpClient = HttpServer.client;
 
     private Integer requestCode;    //新增是1，编辑是0
     private Integer resultCode;     //新增是1，编辑是0，删除新增(什么都不做)是2，删除已有是3
@@ -175,7 +173,7 @@ public class ItemDetailActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                tmpURL = LOCALURL+"/api/newMemo";
+                tmpURL = HttpServer.LOCALURL+"/api/newMemo";
                 getDataFromPost(tmpURL, jsonObject.toString());
                 resultCode = requestCode;
                 break;
@@ -189,7 +187,7 @@ public class ItemDetailActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                tmpURL = LOCALURL+"/api/newMemo";
+                tmpURL = HttpServer.LOCALURL+"/api/newMemo";
                 getDataFromPost(tmpURL, jsonObject.toString());
                 resultCode = requestCode;
                 if(newDate!=null && !newDate.equals(oriDate))
@@ -201,7 +199,7 @@ public class ItemDetailActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                tmpURL = LOCALURL+"/api/newMemo";
+                tmpURL = HttpServer.LOCALURL+"/api/newMemo";
                 getDataFromPost(tmpURL, jsonObject.toString());
                 if(requestCode==FlagValues.newMemoFlag){
                     resultCode = FlagValues.doNothingFlag;

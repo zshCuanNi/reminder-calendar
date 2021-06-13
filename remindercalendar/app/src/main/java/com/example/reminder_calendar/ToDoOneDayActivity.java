@@ -42,9 +42,7 @@ public class ToDoOneDayActivity extends AppCompatActivity {
     private ToDoOneDayRecyclerAdapter toDoOneDayRecyclerAdapter;
     private Toolbar toolbar;
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-    private OkHttpClient okHttpClient = new OkHttpClient();
-    private static final String SERVERURL = "http://10.0.2.2:8848";
-    private static final String LOCALURL = "http://10.0.2.2:8848";
+    private OkHttpClient okHttpClient = HttpServer.client;
     private static String date = "2000-01-01";
 
 
