@@ -26,6 +26,7 @@ public class ToDoOneDayRecyclerAdapter extends RecyclerView.Adapter<ToDoOneDayRe
 
     private ArrayList<String> localTitleDataSet = new ArrayList<String>();
     private ArrayList<String> localContentDataSet = new ArrayList<String>();
+    private ArrayList<String> localTimeDataSet = new ArrayList<String>();
     static private Activity activity;
     private static String strDate;
 
@@ -36,6 +37,7 @@ public class ToDoOneDayRecyclerAdapter extends RecyclerView.Adapter<ToDoOneDayRe
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView contentTextView;
         private final TextView titleTextView;
+        private final TextView timeTextView;
 
         public ViewHolder(View view) {
             super(view);
@@ -59,6 +61,7 @@ public class ToDoOneDayRecyclerAdapter extends RecyclerView.Adapter<ToDoOneDayRe
             });
             contentTextView = (TextView) view.findViewById(R.id.contentTextView);
             titleTextView = (TextView) view.findViewById(R.id.titleTextView);
+            timeTextView = (TextView) view.findViewById(R.id.timeTextView);
         }
 
         public TextView getContentTextView() {
@@ -67,15 +70,19 @@ public class ToDoOneDayRecyclerAdapter extends RecyclerView.Adapter<ToDoOneDayRe
         public TextView getTitleTextView() {
             return titleTextView;
         }
+        public TextView getTimeTextView() {
+            return timeTextView;
+        }
     }
 
     /**
      * Initialize the dataset of the Adapter.
      *
      */
-    public ToDoOneDayRecyclerAdapter(List<String> titleDataSet, List<String> contentDataSet, String strDate, Activity activity) {
+    public ToDoOneDayRecyclerAdapter(List<String> titleDataSet, List<String> contentDataSet, List<String> timeDataSet, String strDate, Activity activity) {
         localTitleDataSet.addAll(titleDataSet);
         localContentDataSet.addAll(contentDataSet);
+        localTimeDataSet.addAll(timeDataSet);
         this.strDate = strDate;
         this.activity = activity;
     }
@@ -98,6 +105,7 @@ public class ToDoOneDayRecyclerAdapter extends RecyclerView.Adapter<ToDoOneDayRe
         // contents of the view with that element
         viewHolder.getTitleTextView().setText(localTitleDataSet.get(position));
         viewHolder.getContentTextView().setText(localContentDataSet.get(position));
+        viewHolder.getTimeTextView().setText(localTimeDataSet.get(position));
     }
 
     // Return the size of your dataset (invoked by the layout manager)
@@ -111,20 +119,23 @@ public class ToDoOneDayRecyclerAdapter extends RecyclerView.Adapter<ToDoOneDayRe
     public void removeData(int position) {
         localTitleDataSet.remove(position);
         localContentDataSet.remove(position);
+        localTimeDataSet.remove(position);
         notifyItemRemoved(position);
     }
 
     //新增数据
-    public void addData(String title, String content) {
+    public void addData(String title, String content, String time) {
         localTitleDataSet.add(title);
         localContentDataSet.add(content);
+        localTimeDataSet.add(time);
         notifyItemInserted(localTitleDataSet.size());
     }
 
     //更改某个位置的数据
-    public void changeData(int position, String title, String content) {
+    public void changeData(int position, String title, String content, String time) {
         localTitleDataSet.set(position, title);
         localContentDataSet.set(position, content);
+        localTimeDataSet.set(position, time);
         notifyItemChanged(position);
     }
 }

@@ -38,6 +38,7 @@ public class ItemDetailActivity extends AppCompatActivity {
 
     private ActivityItemDetailBinding binding;
     private TextView dateText;
+    private EditText timeEditText;
     private EditText contentEditText;
     private EditText titleEditText;
     private Calendar calendar = Calendar.getInstance();
@@ -87,12 +88,14 @@ public class ItemDetailActivity extends AppCompatActivity {
         });
 
         contentEditText = binding.edittextSecondContent;
+        timeEditText = binding.edittextSecondTime;
         titleEditText = binding.edittextSecondTitle;
         Intent intent = getIntent();
         Bundle bundle = intent.getBundleExtra("bundle");
         if(bundle!=null){
             String title = bundle.getString("title", "");
             String content = bundle.getString("content", "");
+            String time = bundle.getString("time","");
             String strDate = bundle.getString("date","null");
             requestCode = bundle.getInt("requestCode",0);
 
@@ -108,6 +111,7 @@ public class ItemDetailActivity extends AppCompatActivity {
             position = bundle.getInt("position");
             titleEditText.setText(title);
             contentEditText.setText(content);
+            timeEditText.setText(time);
         }
 
 
@@ -161,11 +165,12 @@ public class ItemDetailActivity extends AppCompatActivity {
         String tmpURL;
         switch (flag){
             case FlagValues.newMemoFlag:
-                if(titleEditText.getText().equals("") && contentEditText.getText().equals("")){
+                if(titleEditText.getText().equals("") && contentEditText.getText().equals("") && timeEditText.getText().equals("")){
                     resultCode = FlagValues.doNothingFlag;
                     break;
                 }
                 try {
+                    // 还没改逻辑，不知道数据库是否包含时间
                     jsonObject.put("deadline", dateText.getText());
                     jsonObject.put("detail", contentEditText.getText());
                     jsonObject.put("headline", titleEditText.getText());
@@ -214,6 +219,7 @@ public class ItemDetailActivity extends AppCompatActivity {
             bundle.putInt("position", position);
         bundle.putString("title", titleEditText.getText().toString());
         bundle.putString("content", contentEditText.getText().toString());
+        bundle.putString("time", timeEditText.getText().toString());
         Intent intent = new Intent();
         intent.putExtra("bundle", bundle);
         setResult(resultCode, intent);

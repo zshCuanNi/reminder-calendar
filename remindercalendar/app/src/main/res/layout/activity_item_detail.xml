@@ -45,6 +45,17 @@
             android:textSize="20sp"
             android:padding="5dp"/>
         <EditText
+            android:id="@+id/edittext_second_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/detail_time_hint"
+            android:inputType="textMultiLine"
+            android:imeOptions="actionNext"
+            android:background="@drawable/detail_text_background"
+            android:layout_marginLeft="5dp"
+            android:textSize="20sp"
+            android:padding="5dp"/>
+        <EditText
             android:id="@+id/edittext_second_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

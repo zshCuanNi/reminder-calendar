@@ -38,12 +38,14 @@ public class ToDoOneDayActivity extends AppCompatActivity {
 
     private ArrayList<String> titleDataSet = new ArrayList<>();
     private ArrayList<String> contentDataSet = new ArrayList<>();
+    private ArrayList<String> timeDataSet = new ArrayList<>();
     private RecyclerView recyclerView;
     private ToDoOneDayRecyclerAdapter toDoOneDayRecyclerAdapter;
     private Toolbar toolbar;
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     private OkHttpClient okHttpClient = HttpServer.client;
     private static String date = "2000-01-01";
+    private static String time = "00:00";
 
 
     @Override
@@ -54,6 +56,7 @@ public class ToDoOneDayActivity extends AppCompatActivity {
         Bundle bundle = intent.getBundleExtra("bundle");
         if(bundle!=null){
             date = bundle.getString("date","2000-01-01");
+            time = bundle.getString("time","00:00");
         }
 
 
@@ -77,8 +80,9 @@ public class ToDoOneDayActivity extends AppCompatActivity {
         for(int i=0;i<0;i++) {
             titleDataSet.add("title" + i);
             contentDataSet.add("content"+i);
+            timeDataSet.add("hh:mm"+i);
         }
-        toDoOneDayRecyclerAdapter = new ToDoOneDayRecyclerAdapter(titleDataSet, contentDataSet, date, ToDoOneDayActivity.this);
+        toDoOneDayRecyclerAdapter = new ToDoOneDayRecyclerAdapter(titleDataSet, contentDataSet, timeDataSet, date, ToDoOneDayActivity.this);
         recyclerView.setAdapter(toDoOneDayRecyclerAdapter);
 
         //添加一条事件
@@ -87,6 +91,7 @@ public class ToDoOneDayActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Bundle bundle = new Bundle();
                 bundle.putString("date",date);
+                bundle.putString("time",time);
                 bundle.putInt("requestCode", 1);
                 Intent intent = new Intent(ToDoOneDayActivity.this, ItemDetailActivity.class);
                 intent.putExtra("bundle",bundle);
@@ -104,9 +109,9 @@ public class ToDoOneDayActivity extends AppCompatActivity {
 
 //        binding.fab.setOnClickListener(new View.OnClickListener() {
 //            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
+//            public void onClick(View view)place with your own action", Snackbar.LENGTH_LONG)
+////                        .setAction("Action", null).show( {
+//                Snackbar.make(view, "Re);
 //            }
 //        });
     }
@@ -118,12 +123,13 @@ public class ToDoOneDayActivity extends AppCompatActivity {
         Integer position = bundle.getInt("position");
         String newContent = bundle.getString("content");
         String newTitle = bundle.getString("title");
+        String newTime = bundle.getString("time");
         switch (resultCode){
             case FlagValues.editMemoFlag:
-                toDoOneDayRecyclerAdapter.changeData(position,newTitle,newContent);
+                toDoOneDayRecyclerAdapter.changeData(position,newTitle,newContent,newTime);
                 break;
             case FlagValues.newMemoFlag:
-                toDoOneDayRecyclerAdapter.addData(newTitle, newContent);
+                toDoOneDayRecyclerAdapter.addData(newTitle, newContent,newTime);
                 break;
             case FlagValues.deleteMemoFlag:
                 toDoOneDayRecyclerAdapter.removeData(position);
