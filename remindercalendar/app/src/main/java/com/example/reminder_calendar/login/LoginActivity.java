@@ -27,6 +27,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.reminder_calendar.HomeActivity;
 //import com.example.BaiTuanTong_Frontend.ui.register.RegistActivity;
 import com.example.BaiTuanTong_Frontend.utils.MD5Util;
+import com.example.reminder_calendar.HttpServer;
 import com.example.reminder_calendar.databinding.ActivityLoginBinding;
 import com.example.reminder_calendar.databinding.ActivityToDoOneDayBinding;
 import com.example.reminder_calendar.R;
@@ -58,80 +59,33 @@ public class LoginActivity extends AppCompatActivity {
     //private ActivityLoginBinding binding;
 
     private static  OkHttpClient okHttpClient = new OkHttpClient();
-    private static final String SERVERURL = "http://10.0.2.2:8848";
-    private static final String LOCALURL = "http://10.0.2.2:8848";
-    /**
-     * Okhttp的post请求
-     * @param url 向服务器请求的url
-     * @param json 向服务器发送的json包
-     * @return 服务器返回的字符串
-     * @throws IOException 请求出错
-     */
-    public static String post(String url, String json) throws IOException {
-        RequestBody body = RequestBody.create(JSON, json);
-        Request request = new Request.Builder()
-                .url(url)
-                .post(body)
-                .build();
-        try (Response response = LoginActivity.okHttpClient.newCall(request).execute()) {
-            return response.body().string();
-        }
-    }
 
-    //处理异步线程发来的消息
-//    private Handler getHandler = new Handler(new Handler.Callback() {
-//        @Override
-//        public boolean handleMessage(@NonNull Message msg) {
-//            //Log.e("handler",(String)msg.obj);
-//            //super.handleMessage(msg);
-//            if(msg.what == POST) {
-//                retry_time = 0;
-//                try {
-//                    String msgBody = (String) msg.obj;
-//                    if (msgBody.equals("wrong password") || msgBody.equals("wrong username")) {
-//                        Toast.makeText(LoginActivity.this, R.string.login_failed, Toast.LENGTH_SHORT).show();
-//                    } else if (msgBody.equals("system administrator login")) {
-//                        startManagerHomePage();
-//                        String welcomeMessage = "欢迎！管理员";
-//                        Toast.makeText(LoginActivity.this, welcomeMessage, Toast.LENGTH_SHORT).show();
-//                    } else {
-//                        JSONObject jsonObject = new JSONObject((String) msgBody);
-//                        String userId = jsonObject.getString("userId");
-//                        Log.e("Toast", userId);
-//                        //共享参数对象，用来全局共享userId
-//                        SharedPreferences shared = getSharedPreferences("share", MODE_PRIVATE);
-//                        SharedPreferences.Editor editor = shared.edit();
-//                        // 把userId(String)放到全局变量userId中
-//                        // 取出只需调用shared.getString
-//                        editor.putString("userId", userId);
-//                        editor.putString("userName", username);
-//                        editor.putBoolean("logged", true);
-//                        editor.commit();// 提交编辑
-//
-//                        String welcomeMessage = "欢迎！" + username;
-//                        Toast.makeText(LoginActivity.this, welcomeMessage, Toast.LENGTH_SHORT).show();
-//                        startHomePage();
-//                    }
-//
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//
-//                }
-//            }
-//            else if(msg.what == POSTFAIL){
-//                if(retry_time < 3) { //尝试三次，如果不行就放弃
-//                    retry_time++;
-//                    String json = (String)msg.obj;
-//                    getDataFromPost(LOCALURL+"user/login", json);
-//                }
-//                else {
-//                    retry_time = 0;
-//                }
-//            }
-//
-//            return true;
-//        }
-//    });
+    //申请动态内容
+    private Handler getHandler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(@NonNull Message msg) {
+            try {
+                JSONObject jsonObject = new JSONObject((String)msg.obj);
+                int code = jsonObject.getInt("code");
+                if(code==200){
+                    Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                    startActivity(intent);
+                }else{
+                    Toast.makeText(getApplicationContext(),"login failed " + code, Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                    startActivity(intent);
+                    Toast.makeText(getApplicationContext(),"login failed " + code, Toast.LENGTH_LONG).show();
+                }
+            } catch (JSONException e) {
+                Log.e("failhttp","fail");
+                e.printStackTrace();
+            }
+            //super.handleMessage(msg);
+            return true;
+        }
+    });
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -224,7 +178,7 @@ public class LoginActivity extends AppCompatActivity {
                 map.put("password", password);
                 Gson gson = new Gson();
                 String data = gson.toJson(map);
-                //getDataFromPost(LOCALURL+"user/login", data);
+                HttpServer.getDataFromPost(HttpServer.LOCALURL+"/api/login", data, getHandler);
                 startHomePage();
             }
         });
@@ -261,32 +215,4 @@ public class LoginActivity extends AppCompatActivity {
     private void showLoginFailed(@StringRes Integer errorString) {
         Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
     }
-
-    //okhttp方法集合
-
-    //从post获取数据
-//    private void getDataFromPost(String url, String json) {
-//        //Log.e("TAG", "Start getDataFromGet()");
-//        new Thread(){
-//            @Override
-//            public void run() {
-//                super.run();
-//                //Log.e("TAG", "new thread run.");
-//                try {
-//                    String result = post(url, json); //jason用于上传数据，目前不需要
-//                    Log.e("result", result);
-//                    Message msg = Message.obtain();
-//                    msg.what = POST;
-//                    msg.obj = result;
-//                    getHandler.sendMessage(msg);
-//                } catch (java.io.IOException IOException) {
-//                    Log.e("TAG", "post failed.");
-//                    Message msg = Message.obtain();
-//                    msg.what = POSTFAIL;
-//                    msg.obj = json;
-//                    getHandler.sendMessage(msg);
-//                }
-//            }
-//        }.start();
-//    }
 }

@@ -51,14 +51,32 @@ public class RegistActivity extends AppCompatActivity {
 
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     private RegistViewModel registViewModel;
-    private OkHttpClient client = HttpServer.client;
-    private  static final int GET = 1;
-    private  static final int POST = 2;
-    private static final String SERVERURL = HttpServer.CURRENTURL;
-    private static final String LOCALURL = "http://10.0.2.2:5000/";
+    private OkHttpClient client = HttpServer.okHttpClient;
     private String username;
     private String password;
     private String email;
+
+    private Handler getHandler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(@NonNull Message msg) {
+            try {
+                JSONObject jsonObject = new JSONObject((String)msg.obj);
+                int code = jsonObject.getInt("code");
+                if(code==200){
+                    Intent intent = new Intent(RegistActivity.this, HomeActivity.class);
+                    startActivity(intent);
+                }else{
+                    Toast.makeText(getApplicationContext(),"register failed " + code, Toast.LENGTH_LONG).show();
+                    Log.e("fail code", "code: "+code);
+                }
+            } catch (JSONException e) {
+                Log.e("failhttp","fail");
+                e.printStackTrace();
+            }
+            //super.handleMessage(msg);
+            return true;
+        }
+    });
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -71,7 +89,7 @@ public class RegistActivity extends AppCompatActivity {
         final EditText usernameEditText = findViewById(R.id.registUserName);
         final EditText passwordEditText = findViewById(R.id.registPassword);
         final EditText passwordConfirmText = findViewById(R.id.registConfirmPassword);
-        final EditText emailEditText = findViewById(R.id.registEmail);
+        //final EditText emailEditText = findViewById(R.id.registEmail);
         final Button registButton = findViewById(R.id.registButton);
 
         registViewModel.getRegistFormState().observe(this, new Observer<RegistFormState>() {
@@ -84,9 +102,9 @@ public class RegistActivity extends AppCompatActivity {
                 if (registFormState.getUsernameError() != null) {
                     usernameEditText.setError(getString(registFormState.getUsernameError()));
                 }
-                if (registFormState.getEmailError() != null) {
-                    emailEditText.setError(getString(registFormState.getEmailError()));
-                }
+//                if (registFormState.getEmailError() != null) {
+//                    emailEditText.setError(getString(registFormState.getEmailError()));
+//                }
                 if (registFormState.getPasswordError() != null) {
                     passwordEditText.setError(getString(registFormState.getPasswordError()));
                 }
@@ -110,26 +128,25 @@ public class RegistActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 registViewModel.registDataChanged(usernameEditText.getText().toString(),
-                        emailEditText.getText().toString(), passwordEditText.getText().toString(), passwordConfirmText.getText().toString());
+                        passwordEditText.getText().toString(), passwordConfirmText.getText().toString());
             }
         };
         usernameEditText.addTextChangedListener(afterTextChangedListener);
         passwordEditText.addTextChangedListener(afterTextChangedListener);
-        emailEditText.addTextChangedListener(afterTextChangedListener);
+        //emailEditText.addTextChangedListener(afterTextChangedListener);
         passwordConfirmText.addTextChangedListener(afterTextChangedListener);
 
         registButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                JSONObject mJson =new JSONObject();
+                JSONObject jsonObject=new JSONObject();
                 username = usernameEditText.getText().toString();
                 password = MD5Util.encryp(passwordEditText.getText().toString());
-                email = emailEditText.getText().toString();
+                //email = emailEditText.getText().toString();
                 try {
-                    mJson.put("username",username);
-                    mJson.put("password",password);
-                    mJson.put("email",email);
-                    //getDataFromPost(SERVERURL+"/user/register", mJson.toString());
+                    jsonObject.put("username",username);
+                    jsonObject.put("password",password);
+                    HttpServer.getDataFromPost(HttpServer.LOCALURL+"/api/register", jsonObject.toString(),getHandler);
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -139,31 +156,7 @@ public class RegistActivity extends AppCompatActivity {
             }
         });
     }
-    /**
-     * 处理get请求与post请求的回调函数
-     */
-    private Handler getHandler = new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(@NonNull Message msg) {
-            //super.handleMessage(msg);
-            Log.e("TAG", (String)msg.obj);
-            switch (msg.what){
-                case GET:
-                    Toast.makeText(getBaseContext(), (String)msg.obj, Toast.LENGTH_SHORT).show();
-                    break;
-                case POST:
-                    Toast.makeText(getBaseContext(), (String)msg.obj, Toast.LENGTH_SHORT).show();
-                    if (((String) msg.obj).contains("user established")) {
-                        //String welcomeMessage = "欢迎！" + username;
-                        Toast.makeText(RegistActivity.this, "注册成功！", Toast.LENGTH_SHORT).show();
-                        //startHomePage();
-                        startLoginPage();
-                    }
-                    break;
-            }
-            return true;
-        }
-    });
+
     // 转到LoginPageActivity
     private void startLoginPage(){
         Intent intent = new Intent(this, LoginActivity.class);
@@ -176,80 +169,6 @@ public class RegistActivity extends AppCompatActivity {
         startActivity(intent);
         this.finish();
     }
-    /**
-     * 使用get获取数据
-     */
-    private void getDataFromGet(String url) {
-        new Thread(){
-            @Override
-            public void run() {
-                super.run();
-                try {
-                    String result = get(url);
-                    Log.e("TAG", result);
-                    Message msg = Message.obtain();
-                    msg.what = GET;
-                    msg.obj = result;
-                    getHandler.sendMessage(msg);
-                } catch (java.io.IOException IOException) {
-                    Log.e("TAG", "get failed.");
-                }
-            }
-        }.start();
-    }
 
-    /**
-     * 使用post获取数据
-     */
-    private void getDataFromPost(String url, String json) {
-        //Log.e("TAG", "Start getDataFromGet()");
-        new Thread(){
-            @Override
-            public void run() {
-                super.run();
-                //Log.e("TAG", "new thread run.");
-                try {
-                    String result = post(url, json);
-                    Log.e("TAG", result);
-                    Message msg = Message.obtain();
-                    msg.what = POST;
-                    msg.obj = result;
-                    getHandler.sendMessage(msg);
-                } catch (java.io.IOException IOException) {
-                    Log.e("TAG", "post failed.");
-                }
-            }
-        }.start();
-    }
-    /**
-     * Okhttp的get请求
-     * @param url
-     * @return 服务器返回的字符串
-     * @throws IOException
-     */
-    private String get(String url) throws IOException {
-        Request request = new Request.Builder()
-                .url(url)
-                .build();
-        Response response = client.newCall(request).execute();
-        return response.body().string();
-    }
 
-    /**
-     * Okhttp的post请求
-     * @param url
-     * @param json
-     * @return 服务器返回的字符串
-     * @throws IOException
-     */
-    private String post(String url, String json) throws IOException {
-        RequestBody body = RequestBody.create(JSON, json);
-        Request request = new Request.Builder()
-                .url(url)
-                .post(body)
-                .build();
-        try (Response response = client.newCall(request).execute()) {
-            return response.body().string();
-        }
-    }
 }

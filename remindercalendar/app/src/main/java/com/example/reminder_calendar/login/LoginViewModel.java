@@ -46,7 +46,7 @@ public class LoginViewModel extends ViewModel {
 
     public String login(String username, String password) {
         // can be launched in a separate asynchronous job
-        OkHttpClient okHttpClient = HttpServer.client;
+        OkHttpClient okHttpClient = HttpServer.okHttpClient;
 
         String baseUrl = "";
 

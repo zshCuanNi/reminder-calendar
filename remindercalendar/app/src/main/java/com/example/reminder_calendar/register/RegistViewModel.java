@@ -25,13 +25,10 @@ public class RegistViewModel extends ViewModel {
     }
 
 
-    public void registDataChanged(String username, String email, String password, String passwordConfirm) {
+    public void registDataChanged(String username, String password, String passwordConfirm) {
         if (!isUserNameValid(username)) {
             Log.e("invalid", "username");
             registFormState.setValue(new RegistFormState(R.string.invalid_username, null, null, null));
-        } else if (!isEmailValid(email)) {
-            Log.e("invalid", "email");
-            registFormState.setValue(new RegistFormState(null, R.string.invalid_email, null, null));
         } else if (!isPasswordValid(password)) {
             Log.e("invalid", "password");
             registFormState.setValue(new RegistFormState(null, null, R.string.invalid_password, null));

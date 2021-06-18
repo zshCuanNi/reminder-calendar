@@ -49,7 +49,6 @@ import static com.example.reminder_calendar.ui.calendar.ColorValues.Colors;
 
 public class CalendarFragment extends Fragment {
 
-    private HttpServer httpServer = new HttpServer();
     private static final String SERVERURL = "http://10.0.2.2:8848";
     private static final String LOCALURL = "http://10.0.2.2:8848";
     private String username = "";
@@ -135,7 +134,7 @@ public class CalendarFragment extends Fragment {
         int year = mCalendarView.getCurYear();
         int month = mCalendarView.getCurMonth();
 
-        getDataFromGet(httpServer.SERVERURL + "/api/allMemos?username=" + username, GET);
+        getDataFromGet(HttpServer.SERVERURL + "/api/allMemos?username=" + username, GET);
     }
 
     private Calendar getSchemeCalendar(Calendar calendar, int year, int month, int day, String text) {
@@ -237,7 +236,7 @@ public class CalendarFragment extends Fragment {
         Request request = new Request.Builder()
                 .url(url)
                 .build();
-        Response response = httpServer.client.newCall(request).execute();
+        Response response = HttpServer.okHttpClient.newCall(request).execute();
         return response.body().string();
     }
 }

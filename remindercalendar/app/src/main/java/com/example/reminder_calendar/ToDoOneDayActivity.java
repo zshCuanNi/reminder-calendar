@@ -43,7 +43,7 @@ public class ToDoOneDayActivity extends AppCompatActivity {
     private ToDoOneDayRecyclerAdapter toDoOneDayRecyclerAdapter;
     private Toolbar toolbar;
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-    private OkHttpClient okHttpClient = HttpServer.client;
+    private OkHttpClient okHttpClient = HttpServer.okHttpClient;
     private static String date = "2000-01-01";
     private static String time = "00:00";
 
@@ -141,95 +141,7 @@ public class ToDoOneDayActivity extends AppCompatActivity {
 
     }
 
-    //申请动态内容
-    private Handler getHandler = new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(@NonNull Message msg) {
-            try {
-                JSONObject jsonObject = new JSONObject((String)msg.obj);
-                String code = jsonObject.getString("code");
-                Log.e("http",code);
-            } catch (JSONException e) {
-                Log.e("failhttp","fail");
-                e.printStackTrace();
-            }
-            //super.handleMessage(msg);
-            return true;
-        }
-    });
 
-    //从post获取数据
-    private void getDataFromPost(String url, String json) {
-        //Log.e("TAG", "Start getDataFromGet()");
-        new Thread(){
-            @Override
-            public void run() {
-                super.run();
-                //Log.e("TAG", "new thread run.");
-                try {
-                    String result = post(url, json);
-                    Log.e("result", result);
-                    Message msg = Message.obtain();
-                    msg.obj = result;
-                    //msg.what = what;
-                    getHandler.sendMessage(msg);
-                } catch (java.io.IOException IOException) {
-                    Log.e("TAG", "post failed.");
-                    Log.e("exception", IOException.getLocalizedMessage());
-                }
-            }
-        }.start();
-    }
-    /**
-     * Okhttp的post请求
-     * @param url
-     * @param json
-     * @return 服务器返回的字符串
-     * @throws IOException
-     */
-    private String post(String url, String json) throws IOException {
-        RequestBody body = RequestBody.create(JSON, json);
-        Request request = new Request.Builder()
-                .url(url)
-                .post(body)
-                .build();
-        try (Response response = okHttpClient.newCall(request).execute()) {
-            return response.body().string();
-        }
-    }
-    public void getDataFromGet(String url, int what) {
-        new Thread(){
-            @Override
-            public void run() {
-                super.run();
-                try {
-                    String result = get(url);
-                    Log.e("TAG", result);
-                    Message msg = Message.obtain();
-                    msg.obj = result;
-                    msg.what = what;
-                    getHandler.sendMessage(msg);
-                } catch (java.io.IOException IOException) {
-                    Log.e("TAG", "get failed.");
-                }
-            }
-        }.start();
-    }
-    /**
-     * Okhttp的get请求
-     * @param url
-     * @return 服务器返回的字符串
-     * @throws IOException
-     */
-    private String get(String url) throws IOException {
-        Request request = new Request.Builder()
-                .url(url)
-                .build();
-        Log.e("begin", "newCall");
-        Response response = okHttpClient.newCall(request).execute();
-        Log.e("end", "newCall");
-        return response.body().string();
-    }
     //    @Override
 //    public boolean onSupportNavigateUp() {
 //        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_to_do_one_day);
