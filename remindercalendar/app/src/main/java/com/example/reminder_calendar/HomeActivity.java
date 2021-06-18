@@ -26,7 +26,5 @@ public class HomeActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
-//        Intent intent = new Intent(this, ToDoOneDayActivity.class);
-//        startActivity(intent);
     }
 }

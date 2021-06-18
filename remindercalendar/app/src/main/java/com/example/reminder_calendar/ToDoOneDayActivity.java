@@ -36,9 +36,9 @@ public class ToDoOneDayActivity extends AppCompatActivity {
     //private AppBarConfiguration appBarConfiguration;
     private ActivityToDoOneDayBinding binding;
 
-    private ArrayList<String> titleDataSet = new ArrayList<>();
-    private ArrayList<String> contentDataSet = new ArrayList<>();
-    private ArrayList<String> timeDataSet = new ArrayList<>();
+    private ArrayList<String> titleDataSet;
+    private ArrayList<String> contentDataSet;
+    private ArrayList<String> timeDataSet;
     private RecyclerView recyclerView;
     private ToDoOneDayRecyclerAdapter toDoOneDayRecyclerAdapter;
     private Toolbar toolbar;
@@ -67,6 +67,9 @@ public class ToDoOneDayActivity extends AppCompatActivity {
         Log.e("date",date);
         getSupportActionBar().setTitle(date);
 
+        timeDataSet = ListContent.timeDataSet;
+        titleDataSet = ListContent.titleDataSet;
+        contentDataSet = ListContent.contentDataSet;
 
         //创建事件列表
         recyclerView = binding.recyclerView;
