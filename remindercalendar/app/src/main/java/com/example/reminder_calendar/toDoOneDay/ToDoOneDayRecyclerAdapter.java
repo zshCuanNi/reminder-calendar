@@ -15,6 +15,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.reminder_calendar.ItemDetailActivity;
+import com.example.reminder_calendar.ListContent;
 import com.example.reminder_calendar.R;
 
 import java.lang.reflect.Array;
@@ -24,9 +25,10 @@ import java.util.List;
 
 public class ToDoOneDayRecyclerAdapter extends RecyclerView.Adapter<ToDoOneDayRecyclerAdapter.ViewHolder> {
 
-    private ArrayList<String> localTitleDataSet = new ArrayList<String>();
-    private ArrayList<String> localContentDataSet = new ArrayList<String>();
-    private ArrayList<String> localTimeDataSet = new ArrayList<String>();
+    private static ArrayList<String> localTitleDataSet = new ArrayList<String>();
+    private static ArrayList<String> localContentDataSet = new ArrayList<String>();
+    private static ArrayList<String> localTimeDataSet = new ArrayList<String>();
+    private static ArrayList<Integer> localIdDataSet = new ArrayList<>();
     static private Activity activity;
     private static String strDate;
 
@@ -49,9 +51,11 @@ public class ToDoOneDayRecyclerAdapter extends RecyclerView.Adapter<ToDoOneDayRe
                     Bundle bundle = new Bundle();
                     bundle.putString("content", (String) contentTextView.getText());
                     bundle.putString("title", (String) titleTextView.getText());
+                    bundle.putString("time",(String) timeTextView.getText());
                     Integer position = getAdapterPosition();
                     bundle.putInt("position", position);
                     bundle.putString("date",strDate);
+                    bundle.putInt("id",ToDoOneDayRecyclerAdapter.localIdDataSet.get(position));
                     bundle.putInt("requestCode", 0);
                     Intent intent = new Intent(activity, ItemDetailActivity.class);
                     intent.putExtra("bundle",bundle);
@@ -79,10 +83,11 @@ public class ToDoOneDayRecyclerAdapter extends RecyclerView.Adapter<ToDoOneDayRe
      * Initialize the dataset of the Adapter.
      *
      */
-    public ToDoOneDayRecyclerAdapter(List<String> titleDataSet, List<String> contentDataSet, List<String> timeDataSet, String strDate, Activity activity) {
-        localTitleDataSet.addAll(titleDataSet);
-        localContentDataSet.addAll(contentDataSet);
-        localTimeDataSet.addAll(timeDataSet);
+    public ToDoOneDayRecyclerAdapter(String strDate, Activity activity) {
+        localTitleDataSet.addAll(ListContent.titleDataSet);
+        localContentDataSet.addAll(ListContent.contentDataSet);
+        localTimeDataSet.addAll(ListContent.timeDataSet);
+        localIdDataSet.addAll(ListContent.idDataset);
         this.strDate = strDate;
         this.activity = activity;
     }
@@ -120,22 +125,25 @@ public class ToDoOneDayRecyclerAdapter extends RecyclerView.Adapter<ToDoOneDayRe
         localTitleDataSet.remove(position);
         localContentDataSet.remove(position);
         localTimeDataSet.remove(position);
+        localIdDataSet.remove(position);
         notifyItemRemoved(position);
     }
 
     //新增数据
-    public void addData(String title, String content, String time) {
+    public void addData(String title, String content, String time, Integer id) {
         localTitleDataSet.add(title);
         localContentDataSet.add(content);
         localTimeDataSet.add(time);
+        localIdDataSet.add(id);
         notifyItemInserted(localTitleDataSet.size());
     }
 
     //更改某个位置的数据
-    public void changeData(int position, String title, String content, String time) {
+    public void changeData(int position, String title, String content, String time, Integer id) {
         localTitleDataSet.set(position, title);
         localContentDataSet.set(position, content);
         localTimeDataSet.set(position, time);
+        localIdDataSet.set(position, id);
         notifyItemChanged(position);
     }
 }

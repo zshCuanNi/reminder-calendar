@@ -66,12 +66,11 @@ public class LoginActivity extends AppCompatActivity {
         public boolean handleMessage(@NonNull Message msg) {
             try {
                 JSONObject jsonObject = new JSONObject((String)msg.obj);
-                int code = jsonObject.getInt("code");
-                if(code==200){
-                    Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-                    startActivity(intent);
+                String data = jsonObject.getString("data");
+                if(data.equals("登录成功")){
+                    startHomePage();
                 }else{
-                    Toast.makeText(getApplicationContext(),"login failed " + code, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(),"login failed " + data, Toast.LENGTH_LONG).show();
                 }
             } catch (JSONException e) {
                 Log.e("failhttp","fail");
@@ -86,12 +85,6 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SharedPreferences shared = getSharedPreferences("share", MODE_PRIVATE);
-        if(shared.getBoolean("logged", false)){  //如果已经登录过，直接进入主页
-
-            //startHomePage();
-        }
-
 
         setContentView(R.layout.activity_login);
 
@@ -176,7 +169,7 @@ public class LoginActivity extends AppCompatActivity {
                 Gson gson = new Gson();
                 String data = gson.toJson(map);
                 HttpServer.getDataFromPost(HttpServer.LOCALURL+"/api/login", data, getHandler);
-                startHomePage();
+                //startHomePage();
             }
         });
 

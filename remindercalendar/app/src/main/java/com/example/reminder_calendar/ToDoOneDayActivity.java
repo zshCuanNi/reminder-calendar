@@ -39,6 +39,7 @@ public class ToDoOneDayActivity extends AppCompatActivity {
     private ArrayList<String> titleDataSet;
     private ArrayList<String> contentDataSet;
     private ArrayList<String> timeDataSet;
+    private ArrayList<Integer> idDataSet;
     private RecyclerView recyclerView;
     private ToDoOneDayRecyclerAdapter toDoOneDayRecyclerAdapter;
     private Toolbar toolbar;
@@ -71,6 +72,7 @@ public class ToDoOneDayActivity extends AppCompatActivity {
         titleDataSet = ListContent.titleDataSet;
         contentDataSet = ListContent.contentDataSet;
 
+
         //创建事件列表
         recyclerView = binding.recyclerView;
 
@@ -85,7 +87,7 @@ public class ToDoOneDayActivity extends AppCompatActivity {
             contentDataSet.add("content"+i);
             timeDataSet.add("hh:mm"+i);
         }
-        toDoOneDayRecyclerAdapter = new ToDoOneDayRecyclerAdapter(titleDataSet, contentDataSet, timeDataSet, date, ToDoOneDayActivity.this);
+        toDoOneDayRecyclerAdapter = new ToDoOneDayRecyclerAdapter(date, ToDoOneDayActivity.this);
         recyclerView.setAdapter(toDoOneDayRecyclerAdapter);
 
         //添加一条事件
@@ -127,12 +129,13 @@ public class ToDoOneDayActivity extends AppCompatActivity {
         String newContent = bundle.getString("content");
         String newTitle = bundle.getString("title");
         String newTime = bundle.getString("time");
+        Integer id = bundle.getInt("id");
         switch (resultCode){
             case FlagValues.editMemoFlag:
-                toDoOneDayRecyclerAdapter.changeData(position,newTitle,newContent,newTime);
+                toDoOneDayRecyclerAdapter.changeData(position,newTitle,newContent,newTime,id);
                 break;
             case FlagValues.newMemoFlag:
-                toDoOneDayRecyclerAdapter.addData(newTitle, newContent,newTime);
+                toDoOneDayRecyclerAdapter.addData(newTitle, newContent,newTime,id);
                 break;
             case FlagValues.deleteMemoFlag:
                 toDoOneDayRecyclerAdapter.removeData(position);
