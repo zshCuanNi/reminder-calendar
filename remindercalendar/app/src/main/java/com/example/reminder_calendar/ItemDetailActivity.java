@@ -63,6 +63,8 @@ public class ItemDetailActivity extends AppCompatActivity {
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     private OkHttpClient okHttpClient = HttpServer.okHttpClient;
 
+    private Integer id=0;
+
     private Integer requestCode;    //新增是1，编辑是0
     private Integer resultCode;     //新增是1，编辑是0，删除新增(什么都不做)是2，删除已有是3
 
@@ -77,8 +79,15 @@ public class ItemDetailActivity extends AppCompatActivity {
         public boolean handleMessage(@NonNull Message msg) {
             try {
                 JSONObject jsonObject = new JSONObject((String)msg.obj);
-                String code = jsonObject.getString("code");
-                Log.e("http",code);
+                int code = jsonObject.getInt("code");
+                if(code==200){
+                    String data = jsonObject.getString("data");
+                    if(data.contains("添加成功")) {
+                        Log.e("http add data",data.substring(data.length()-1));
+                        id = Integer.parseInt(data.substring(data.length()-1));
+                        Log.e("http id", "" + id);
+                    }
+                }
             } catch (JSONException e) {
                 Log.e("failhttp","fail");
                 e.printStackTrace();
@@ -118,6 +127,7 @@ public class ItemDetailActivity extends AppCompatActivity {
             String content = bundle.getString("content", "");
             String time = bundle.getString("time","");
             String strDate = bundle.getString("date","null");
+            id = bundle.getInt("id");
             requestCode = bundle.getInt("requestCode",0);
 
             if(!strDate.equals("null")) {
@@ -208,7 +218,7 @@ public class ItemDetailActivity extends AppCompatActivity {
                     jsonObject.put("deadline", dateText.getText()+ " " + timeEditText.getText());
                     jsonObject.put("detail", contentEditText.getText());
                     jsonObject.put("headline", titleEditText.getText());
-                    jsonObject.put("id", 0);
+                    jsonObject.put("id", id);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -220,7 +230,7 @@ public class ItemDetailActivity extends AppCompatActivity {
                 break;
             case FlagValues.deleteMemoFlag:
                 try {
-                    jsonObject.put("id", 0);
+                    jsonObject.put("id", id);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -240,6 +250,7 @@ public class ItemDetailActivity extends AppCompatActivity {
         bundle.putString("title", titleEditText.getText().toString());
         bundle.putString("content", contentEditText.getText().toString());
         bundle.putString("time", timeEditText.getText().toString());
+        bundle.putInt("id",id);
         Intent intent = new Intent();
         intent.putExtra("bundle", bundle);
         setResult(resultCode, intent);

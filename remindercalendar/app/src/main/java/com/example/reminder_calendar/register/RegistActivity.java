@@ -61,13 +61,13 @@ public class RegistActivity extends AppCompatActivity {
         public boolean handleMessage(@NonNull Message msg) {
             try {
                 JSONObject jsonObject = new JSONObject((String)msg.obj);
-                int code = jsonObject.getInt("code");
-                if(code==200){
+                String data = jsonObject.getString("data");
+                if(data.equals("注册成功")){
                     Intent intent = new Intent(RegistActivity.this, LoginActivity.class);
                     startActivity(intent);
                 }else{
-                    Toast.makeText(getApplicationContext(),"register failed " + code, Toast.LENGTH_LONG).show();
-                    Log.e("fail code", "code: "+code);
+                    Toast.makeText(getApplicationContext(),"register failed " + data , Toast.LENGTH_LONG).show();
+                    Log.e("fail code", "code: " + data);
                 }
             } catch (JSONException e) {
                 Log.e("failhttp","fail");
