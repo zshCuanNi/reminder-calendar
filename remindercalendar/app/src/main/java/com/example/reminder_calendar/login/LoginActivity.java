@@ -72,9 +72,6 @@ public class LoginActivity extends AppCompatActivity {
                     startActivity(intent);
                 }else{
                     Toast.makeText(getApplicationContext(),"login failed " + code, Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-                    startActivity(intent);
-                    Toast.makeText(getApplicationContext(),"login failed " + code, Toast.LENGTH_LONG).show();
                 }
             } catch (JSONException e) {
                 Log.e("failhttp","fail");

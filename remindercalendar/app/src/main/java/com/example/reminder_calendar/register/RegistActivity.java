@@ -63,7 +63,7 @@ public class RegistActivity extends AppCompatActivity {
                 JSONObject jsonObject = new JSONObject((String)msg.obj);
                 int code = jsonObject.getInt("code");
                 if(code==200){
-                    Intent intent = new Intent(RegistActivity.this, HomeActivity.class);
+                    Intent intent = new Intent(RegistActivity.this, LoginActivity.class);
                     startActivity(intent);
                 }else{
                     Toast.makeText(getApplicationContext(),"register failed " + code, Toast.LENGTH_LONG).show();

@@ -191,7 +191,7 @@ public class ItemDetailActivity extends AppCompatActivity {
                     break;
                 }
                 try {
-                    jsonObject.put("deadline", dateText.getText());
+                    jsonObject.put("deadline", dateText.getText()+" "+timeEditText.getText());
                     jsonObject.put("detail", contentEditText.getText());
                     jsonObject.put("headline", titleEditText.getText());
                     jsonObject.put("username", "zhp");
@@ -205,14 +205,14 @@ public class ItemDetailActivity extends AppCompatActivity {
 
             case FlagValues.editMemoFlag:
                 try {
-                    jsonObject.put("deadline", dateText.getText());
+                    jsonObject.put("deadline", dateText.getText()+ " " + timeEditText.getText());
                     jsonObject.put("detail", contentEditText.getText());
                     jsonObject.put("headline", titleEditText.getText());
                     jsonObject.put("id", 0);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                tmpURL = HttpServer.LOCALURL+"/api/newMemo";
+                tmpURL = HttpServer.LOCALURL+"/api/editMemo";
                 HttpServer.getDataFromPost(tmpURL, jsonObject.toString(), getHandler);
                 resultCode = requestCode;
                 if(newDate!=null && !newDate.equals(oriDate))
