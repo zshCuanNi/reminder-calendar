@@ -88,7 +88,7 @@ public class ToDoOneDayRecyclerAdapter extends RecyclerView.Adapter<ToDoOneDayRe
         localContentDataSet.clear();
         localTimeDataSet.clear();
         localIdDataSet.clear();
-        
+
         localTitleDataSet.addAll(ListContent.titleDataSet);
         localContentDataSet.addAll(ListContent.contentDataSet);
         localTimeDataSet.addAll(ListContent.timeDataSet);
