@@ -16,10 +16,12 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.reminder_calendar.FlagValues;
 import com.example.reminder_calendar.HomeActivity;
 import com.example.reminder_calendar.HttpServer;
 import com.example.reminder_calendar.ItemDetailActivity;
@@ -39,6 +41,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import okhttp3.MediaType;
@@ -52,7 +55,7 @@ public class CalendarFragment extends Fragment {
 
     private static final String SERVERURL = "http://10.0.2.2:8848";
     private static final String LOCALURL = "http://10.0.2.2:8848";
-    private String username = "";
+
     final static int GET = 0;
 
     List<String> headline = new ArrayList<>();
@@ -104,6 +107,7 @@ public class CalendarFragment extends Fragment {
                 intent.putExtra("bundle",bundle);
 
                 // 准备当天事件的所有备忘
+                ListContent.clearData();
                 for (int j = 0; j < deadline.size(); j++) {
                     LocalDateTime i = deadline.get(j);
                     if (i.getYear() == year && i.getMonthValue() == month && i.getDayOfMonth() == day) {
@@ -112,7 +116,8 @@ public class CalendarFragment extends Fragment {
                         ListContent.timeDataSet.add(strDeadline.get(j));
                     }
                 }
-                startActivity(intent);
+                Log.e("s", ""+ListContent.titleDataSet.size());
+                startActivityForResult(intent, 0);
             }
         });
         addButton.setOnClickListener(new OnClickListener() {
@@ -129,6 +134,7 @@ public class CalendarFragment extends Fragment {
 //                        selectedCalendar.getDay(),
 //                        hour.toString() + ":" + minute.toString());
 //                mCalendarView.addSchemeDate(schemeCalendar);
+
                 // 跳转到加入一条备忘
                 // 通过mCalendar.getSelectedCalendar获得当前时期
                 Calendar selectedCalendar = mCalendarView.getSelectedCalendar();
@@ -140,11 +146,11 @@ public class CalendarFragment extends Fragment {
                 Bundle bundle = new Bundle();
                 bundle.putString("date",date);
                 bundle.putString("time","00:00");
-                bundle.putInt("requestCode", 1);
+                bundle.putInt("requestCode", FlagValues.newMemoFlag);
                 Intent intent = new Intent(getActivity(), ItemDetailActivity.class);
                 intent.putExtra("bundle",bundle);
                 //requestCode为1，代表是新增事件
-                startActivity(intent);
+                startActivityForResult(intent,FlagValues.newMemoFlag);
             }
         });
 
@@ -161,11 +167,18 @@ public class CalendarFragment extends Fragment {
         return root;
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.e("result", "1");
+        initData();
+    }
+
     void initData() {
         int year = mCalendarView.getCurYear();
         int month = mCalendarView.getCurMonth();
 
-        getDataFromGet(HttpServer.SERVERURL + "/api/allMemos?username=" + username, GET);
+        getDataFromGet(HttpServer.SERVERURL + "/api/allMemos?username=" + ListContent.username, GET);
     }
 
     private Calendar getSchemeCalendar(Calendar calendar, int year, int month, int day, String text) {
@@ -192,24 +205,40 @@ public class CalendarFragment extends Fragment {
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void parseJsonPacket(String json) throws JSONException {
+        Log.e("home obj", json);
         JSONObject jsonObject = new JSONObject(json);
 
         JSONArray memoList = jsonObject.getJSONArray("data");
         // update data
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime dd;
         Calendar schemeCalendar;
 
+        HashMap<String, Calendar> dateCalendars = new HashMap<>();
+        headline.clear();
+        detail.clear();
+        strDeadline.clear();
+        deadline.clear();
+        ListContent.clearData();
         for (int i = 0; i < memoList.length(); i++) {
+            Log.e("i", ""+i);
             headline.add(memoList.getJSONObject(i).getString("headline"));
             detail.add(memoList.getJSONObject(i).getString("detail"));
             strDeadline.add(memoList.getJSONObject(i).getString("deadline"));
-
+            //Calendar selectedCalendar = mCalendarView.getSelectedCalendar();
             dd = LocalDateTime.parse(strDeadline.get(i), formatter);
             deadline.add(dd);
-
+            String date = ""+dd.getYear()+dd.getMonth()+dd.getDayOfMonth();
+            Calendar calendar;
+            if(!dateCalendars.containsKey(date)){
+                calendar = new Calendar();
+                dateCalendars.put(date, calendar);
+            }else{
+                calendar = dateCalendars.get(date);
+            }
+            Log.e("time", ((Integer)dd.getHour()).toString() + ":" + ((Integer)dd.getMinute()).toString());
             schemeCalendar = getSchemeCalendar(
-                    new Calendar(),
+                    calendar,
                     dd.getYear(),
                     dd.getMonthValue(),
                     dd.getDayOfMonth(),

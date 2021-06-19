@@ -204,7 +204,7 @@ public class ItemDetailActivity extends AppCompatActivity {
                     jsonObject.put("deadline", dateText.getText()+" "+timeEditText.getText());
                     jsonObject.put("detail", contentEditText.getText());
                     jsonObject.put("headline", titleEditText.getText());
-                    jsonObject.put("username", "zhp");
+                    jsonObject.put("username", ListContent.username);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

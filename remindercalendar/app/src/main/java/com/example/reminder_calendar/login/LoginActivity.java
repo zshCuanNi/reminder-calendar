@@ -28,6 +28,7 @@ import com.example.reminder_calendar.HomeActivity;
 //import com.example.BaiTuanTong_Frontend.ui.register.RegistActivity;
 import com.example.BaiTuanTong_Frontend.utils.MD5Util;
 import com.example.reminder_calendar.HttpServer;
+import com.example.reminder_calendar.ListContent;
 import com.example.reminder_calendar.databinding.ActivityLoginBinding;
 import com.example.reminder_calendar.databinding.ActivityToDoOneDayBinding;
 import com.example.reminder_calendar.R;
@@ -68,6 +69,7 @@ public class LoginActivity extends AppCompatActivity {
                 JSONObject jsonObject = new JSONObject((String)msg.obj);
                 String data = jsonObject.getString("data");
                 if(data.equals("登录成功")){
+                    ListContent.username = username;
                     startHomePage();
                 }else{
                     Toast.makeText(getApplicationContext(),"login failed " + data, Toast.LENGTH_LONG).show();

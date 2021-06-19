@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 
 import com.example.reminder_calendar.toDoOneDay.ToDoOneDayRecyclerAdapter;
@@ -147,6 +148,16 @@ public class ToDoOneDayActivity extends AppCompatActivity {
 
     }
 
+//    //截获返回键
+//    @Override
+//    public boolean onKeyDown(int keyCode, KeyEvent event) {
+//        if (keyCode == KeyEvent.KEYCODE_BACK) {
+//            finish();
+//            return true;
+//        } else {
+//            return super.onKeyDown(keyCode, event);
+//        }
+//    }
 
     //    @Override
 //    public boolean onSupportNavigateUp() {
