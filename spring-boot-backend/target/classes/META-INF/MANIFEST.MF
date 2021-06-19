@@ -1,0 +1,42 @@
+Manifest-Version: 1.0
+Main-Class: cc.kinami.template.TemplateApplication
+Class-Path: json-path-2.4.0.jar spring-boot-starter-validation-2.4.0.jar
+  spring-expression-5.3.1.jar mysql-connector-java-8.0.25.jar spring-boo
+ t-starter-jdbc-2.4.0.jar HikariCP-3.4.5.jar junit-jupiter-params-5.7.0.
+ jar guava-20.0.jar spring-jdbc-5.3.1.jar slf4j-api-1.7.30.jar mybatis-s
+ pring-2.0.4.jar objenesis-3.1.jar spring-beans-5.3.1.jar mockito-core-3
+ .6.0.jar snakeyaml-1.27.jar spring-websocket-5.3.1.jar spring-plugin-me
+ tadata-1.2.0.RELEASE.jar spring-boot-2.4.0.jar tomcat-embed-websocket-9
+ .0.39.jar jackson-databind-2.11.3.jar xmlunit-core-2.7.0.jar spring-aop
+ -5.3.1.jar assertj-core-3.18.1.jar jakarta.annotation-api-1.3.5.jar jso
+ n-smart-2.3.jar knife4j-spring-ui-3.0.2.jar accessors-smart-1.2.jar jso
+ nassert-1.5.0.jar mapstruct-1.2.0.Final.jar spring-tx-5.3.1.jar logback
+ -core-1.2.3.jar swagger-annotations-1.5.22.jar commons-dbcp2-2.8.0.jar 
+ springfox-schema-2.9.2.jar log4j-api-2.13.3.jar hamcrest-2.2.jar spring
+ -context-5.3.1.jar spring-boot-test-2.4.0.jar classmate-1.5.1.jar junit
+ -jupiter-5.7.0.jar jakarta.activation-api-1.2.2.jar mybatis-3.5.4.jar h
+ amcrest-core-2.2.jar springfox-swagger-common-2.9.2.jar spring-boot-sta
+ rter-json-2.4.0.jar spring-boot-starter-web-2.4.0.jar apiguardian-api-1
+ .1.0.jar springfox-core-2.9.2.jar java-jwt-3.10.3.jar spring-boot-autoc
+ onfigure-2.4.0.jar tomcat-embed-core-9.0.39.jar jakarta.validation-api-
+ 2.0.2.jar jackson-module-parameter-names-2.11.3.jar mockito-junit-jupit
+ er-3.6.0.jar log4j-core-2.14.0.jar jackson-datatype-jsr310-2.11.3.jar j
+ unit-jupiter-api-5.7.0.jar swagger-models-1.5.22.jar junit-jupiter-engi
+ ne-5.7.0.jar mybatis-spring-boot-autoconfigure-2.1.2.jar android-json-0
+ .0.20131108.vaadin1.jar byte-buddy-agent-1.10.18.jar mybatis-spring-boo
+ t-starter-2.1.2.jar junit-platform-commons-1.7.0.jar springfox-spi-2.9.
+ 2.jar asm-5.0.4.jar spring-jcl-5.3.1.jar jboss-logging-3.4.1.Final.jar 
+ spring-boot-starter-logging-2.4.0.jar spring-boot-test-autoconfigure-2.
+ 4.0.jar opentest4j-1.2.0.jar logback-classic-1.2.3.jar junit-4.13.1.jar
+  spring-webmvc-5.3.1.jar junit-platform-engine-1.7.0.jar spring-boot-st
+ arter-2.4.0.jar spring-test-5.3.1.jar jakarta.xml.bind-api-2.3.3.jar sp
+ ringfox-swagger2-2.9.2.jar spring-plugin-core-1.2.0.RELEASE.jar spring-
+ messaging-5.3.1.jar spring-boot-starter-test-2.4.0.jar commons-pool2-2.
+ 9.0.jar jackson-core-2.11.3.jar byte-buddy-1.10.18.jar log4j-to-slf4j-2
+ .13.3.jar jackson-datatype-jdk8-2.11.3.jar spring-boot-starter-websocke
+ t-2.4.0.jar jakarta.el-3.0.3.jar springfox-swagger-ui-2.9.2.jar commons
+ -codec-1.15.jar jul-to-slf4j-1.7.30.jar spring-core-5.3.1.jar spring-bo
+ ot-starter-tomcat-2.4.0.jar spring-web-5.3.1.jar springfox-spring-web-2
+ .9.2.jar hibernate-validator-6.1.6.Final.jar jackson-annotations-2.11.3
+ .jar
+
