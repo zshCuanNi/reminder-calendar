@@ -23,6 +23,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.reminder_calendar.HomeActivity;
 import com.example.reminder_calendar.HttpServer;
 import com.example.reminder_calendar.ItemDetailActivity;
+import com.example.reminder_calendar.ListContent;
 import com.example.reminder_calendar.R;
 import com.example.reminder_calendar.ToDoOneDayActivity;
 import com.haibin.calendarview.Calendar;
@@ -84,10 +85,13 @@ public class CalendarFragment extends Fragment {
         yearTextView.setText(((Integer)mCalendarView.getCurYear()).toString());
 
         detailButton.setOnClickListener(new OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
-                // 通过mCalendar.getSelectedCalendar获得当前时期
                 // 跳转到某一天的事件流
+
+                // 准备intent
+                // 通过mCalendar.getSelectedCalendar获得当前时期
                 Calendar selectedCalendar = mCalendarView.getSelectedCalendar();
                 Integer year = selectedCalendar.getYear();
                 Integer month = selectedCalendar.getMonth();
@@ -98,22 +102,49 @@ public class CalendarFragment extends Fragment {
                 bundle.putString("date", date);
                 Intent intent = new Intent(getActivity(), ToDoOneDayActivity.class);
                 intent.putExtra("bundle",bundle);
+
+                // 准备当天事件的所有备忘
+                for (int j = 0; j < deadline.size(); j++) {
+                    LocalDateTime i = deadline.get(j);
+                    if (i.getYear() == year && i.getMonthValue() == month && i.getDayOfMonth() == day) {
+                        ListContent.titleDataSet.add(headline.get(j));
+                        ListContent.contentDataSet.add(detail.get(j));
+                        ListContent.timeDataSet.add(strDeadline.get(j));
+                    }
+                }
                 startActivity(intent);
             }
         });
         addButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+//                // for demo
+//                Calendar selectedCalendar = mCalendarView.getSelectedCalendar();
+//                Integer hour = (int)Math.floor(Math.random() * 24);
+//                Integer minute = (int)Math.floor((Math.random() * 60));
+//                Calendar schemeCalendar = getSchemeCalendar(
+//                        selectedCalendar,
+//                        selectedCalendar.getYear(),
+//                        selectedCalendar.getMonth(),
+//                        selectedCalendar.getDay(),
+//                        hour.toString() + ":" + minute.toString());
+//                mCalendarView.addSchemeDate(schemeCalendar);
+                // 跳转到加入一条备忘
+                // 通过mCalendar.getSelectedCalendar获得当前时期
                 Calendar selectedCalendar = mCalendarView.getSelectedCalendar();
-                Integer hour = (int)Math.floor(Math.random() * 24);
-                Integer minute = (int)Math.floor((Math.random() * 60));
-                Calendar schemeCalendar = getSchemeCalendar(
-                        selectedCalendar,
-                        selectedCalendar.getYear(),
-                        selectedCalendar.getMonth(),
-                        selectedCalendar.getDay(),
-                        hour.toString() + ":" + minute.toString());
-                mCalendarView.addSchemeDate(schemeCalendar);
+                Integer year = selectedCalendar.getYear();
+                Integer month = selectedCalendar.getMonth();
+                Integer day = selectedCalendar.getDay();
+                String date = year.toString() + "-" + translateIntegerToString(month) + "-" + translateIntegerToString(day);
+
+                Bundle bundle = new Bundle();
+                bundle.putString("date",date);
+                bundle.putString("time","00:00");
+                bundle.putInt("requestCode", 1);
+                Intent intent = new Intent(getActivity(), ItemDetailActivity.class);
+                intent.putExtra("bundle",bundle);
+                //requestCode为1，代表是新增事件
+                startActivity(intent);
             }
         });
 
@@ -125,7 +156,7 @@ public class CalendarFragment extends Fragment {
             }
         });
 
-        // initData();
+        initData();
 
         return root;
     }
@@ -165,7 +196,7 @@ public class CalendarFragment extends Fragment {
 
         JSONArray memoList = jsonObject.getJSONArray("data");
         // update data
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         LocalDateTime dd;
         Calendar schemeCalendar;
 
